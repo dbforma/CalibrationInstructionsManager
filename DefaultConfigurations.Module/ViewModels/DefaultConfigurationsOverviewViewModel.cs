@@ -3,9 +3,9 @@ using System.Linq;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
+using CalibrationInstructionsManager.Core.Models.Templates;
 using Prism.Commands;
 using Prism.Regions;
-using DefaultConfigurationTemplate = CalibrationInstructionsManager.Core.Models.Templates.DefaultConfigurationTemplate;
 
 namespace DefaultConfigurations.Module.ViewModels
 {
