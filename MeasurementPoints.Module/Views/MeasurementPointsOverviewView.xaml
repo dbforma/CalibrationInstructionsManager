@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="MeasurementPoints.Module.Views.MeasurementPointsOverviewView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MeasurementPoints.Module.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="clr-namespace:CalibrationInstructionsManager.Core.Controls;assembly=CalibrationInstructionsManager.Core">
+    <UserControl.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Header" Value="{Binding DataContext.SelectedMeasurementPoint.FullName}" />
+
+            <!-- Close Tab -->
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <ContentControl VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,0,7,0" Content="{Binding}"></ContentControl>
+                            <Button Grid.Column="1" Content="x">
+                                <interactivity:Interaction.Triggers>
+                                    <interactivity:EventTrigger EventName="Click">
+                                        <controls:CloseTabAction></controls:CloseTabAction>
+                                    </interactivity:EventTrigger>
+                                </interactivity:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" Background="White" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ComboBox Grid.Row="2" ItemsSource="{Binding PropertiesList}"></ComboBox>
+        <DataGrid Grid.Row="0" x:Name="MeasurementPoints" ItemsSource="{Binding MeasurementPoints, Mode=OneWay}" AlternatingRowBackground="LightGray" CanUserAddRows="False" AllowDrop="True">
+
+            <interactivity:Interaction.Triggers>
+                <interactivity:EventTrigger EventName="SelectionChanged">
+                    <prism:InvokeCommandAction Command="{Binding MeasurementPointSelectedCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=MeasurementPoints}" />
+                </interactivity:EventTrigger>
+            </interactivity:Interaction.Triggers>
+        </DataGrid>
+
+        <TabControl Grid.Row="1" Margin="10" prism:RegionManager.RegionName="MeasurementPointsDetailRegion" />
+
+
+    </Grid>
+</UserControl>

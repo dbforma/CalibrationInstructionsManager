@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalibrationInstructionsManager", "CalibrationInstructionsManager\CalibrationInstructionsManager.csproj", "{04A9008D-9275-41CD-A678-4DDDC5E9F7AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalibrationInstructionsManager.Core", "CalibrationInstructionsManager.Core\CalibrationInstructionsManager.Core.csproj", "{C467FA2D-70B8-4053-9A35-5793FAD8925D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChannelSettings.Module", "ChannelSettings.Module\ChannelSettings.Module.csproj", "{B286977E-8A96-4669-8A4D-1A2B9FE9E65E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultConfigurations.Module", "DefaultConfigurations.Module\DefaultConfigurations.Module.csproj", "{58F7C514-8393-4EDD-A898-A1FBA3F33A34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeasurementPoints.Module", "MeasurementPoints.Module\MeasurementPoints.Module.csproj", "{8114FF98-950B-4FAD-A923-E5F41A619C60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalibrationInstructionsManager.Login", "CalibrationInstructionsManager.Login\CalibrationInstructionsManager.Login.csproj", "{8880662F-3E6E-41A3-98B0-3C1020A9F199}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04A9008D-9275-41CD-A678-4DDDC5E9F7AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04A9008D-9275-41CD-A678-4DDDC5E9F7AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04A9008D-9275-41CD-A678-4DDDC5E9F7AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04A9008D-9275-41CD-A678-4DDDC5E9F7AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C467FA2D-70B8-4053-9A35-5793FAD8925D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C467FA2D-70B8-4053-9A35-5793FAD8925D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C467FA2D-70B8-4053-9A35-5793FAD8925D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C467FA2D-70B8-4053-9A35-5793FAD8925D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B286977E-8A96-4669-8A4D-1A2B9FE9E65E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B286977E-8A96-4669-8A4D-1A2B9FE9E65E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B286977E-8A96-4669-8A4D-1A2B9FE9E65E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B286977E-8A96-4669-8A4D-1A2B9FE9E65E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58F7C514-8393-4EDD-A898-A1FBA3F33A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58F7C514-8393-4EDD-A898-A1FBA3F33A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58F7C514-8393-4EDD-A898-A1FBA3F33A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58F7C514-8393-4EDD-A898-A1FBA3F33A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8114FF98-950B-4FAD-A923-E5F41A619C60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8114FF98-950B-4FAD-A923-E5F41A619C60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8114FF98-950B-4FAD-A923-E5F41A619C60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8114FF98-950B-4FAD-A923-E5F41A619C60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8880662F-3E6E-41A3-98B0-3C1020A9F199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8880662F-3E6E-41A3-98B0-3C1020A9F199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8880662F-3E6E-41A3-98B0-3C1020A9F199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8880662F-3E6E-41A3-98B0-3C1020A9F199}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D426FF2A-9331-4E09-8764-8CC7611BE204}
+	EndGlobalSection
+EndGlobal

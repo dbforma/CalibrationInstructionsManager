@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CalibrationInstructionsManager.Core.Models.ValueTypes
+{
+    public class DefaultConfigurationValueType : ViewModelBase
+    {
+        private int _parameterId;
+        private int _templateId;
+        private int _typeId;
+        private string _typeName;
+        private double? _value;
+
+        public int ParameterId { get { return _parameterId; } set { _parameterId = value; OnPropertyChanged(); } }
+        public int TemplateId { get { return _templateId; } set { _templateId = value; OnPropertyChanged(); } }
+        public int TypeId { get { return _typeId; } set { _typeId = value; OnPropertyChanged(); } }
+        public string TypeName { get { return _typeName; } set { _typeName = value; OnPropertyChanged(); } }
+        public double? Value { get { return _value; } set { _value = value; OnPropertyChanged(); } }
+
+    }
+}

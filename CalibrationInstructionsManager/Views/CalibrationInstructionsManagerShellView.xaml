@@ -1,0 +1,46 @@
+﻿<Window x:Class="CalibrationInstructionsManager.Views.CalibrationInstructionsManagerShellView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Title="{Binding Title}" Height="Auto" Width="1300"
+             xmlns:converters="clr-namespace:CalibrationInstructionsManager.Core.Converters;assembly=CalibrationInstructionsManager.Core"
+             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core">
+    <Window.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Header" Value="{Binding DataContext.Title}"/>
+        </Style>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"></converters:BoolToVisibilityConverter>
+    </Window.Resources>
+    <Grid Background="AliceBlue">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" 
+                    behaviors:ResponsivenessBehavior.HorizontalBreakpoint="260">
+
+            <Button Command="{Binding NavigateCommand}" CommandParameter="DatabaseLoginView" Content="L O G I N" Width="260" Height="40"></Button>
+            <Button Command="{Binding NavigateCommand}" CommandParameter="DefaultConfigurationTemplatesOverviewView" Content="D E F A U L T  C O N F I G U R A T I O N S" Width="260"></Button>
+            <Button Command="{Binding NavigateCommand}" CommandParameter="MeasurementPointsOverviewView" Content="M E A S U R E M E N T  P O I N T S" Width="260" Height="40"></Button>
+            <Button Command="{Binding NavigateCommand}" CommandParameter="ChannelSettingsOverviewView" Content="C H A N N E L  S E T T I N G S" Width="260" Height="40"></Button>
+            <Button Command="{Binding ApplicationCommands.EnableButtonCommand}" CommandParameter="MeasurementPointsOverviewView" Content="W R I T E  T O  D A T A B A S E" Width="260" Height="40"></Button>
+        </StackPanel>
+
+        <!-- <TabControl Grid.Row="2" Grid.Column="0" Margin="10" prism:RegionManager.RegionName="CalibrationManagementContentRegion"></TabControl> -->
+        <ContentControl Grid.Column="0" Grid.Row="4" prism:RegionManager.RegionName="NavigationRegion"></ContentControl>
+        <!-- <ContentControl Grid.Column="0" Grid.Row="3" prism:RegionManager.RegionName="MeasurementPointRegion" ></ContentControl> -->
+        <!-- <ContentControl Grid.Column="0" Grid.Row="5" prism:RegionManager.RegionName="MessageOutputRegion" ></ContentControl> -->
+
+    </Grid>
+</Window>
