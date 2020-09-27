@@ -8,11 +8,14 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:CalibrationInstructionsManager.Core.Controls;assembly=CalibrationInstructionsManager.Core"
-             prism:ViewModelLocator.AutoWireViewModel="True">
+             xmlns:behavior="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             Height="Auto">
     <UserControl.Resources>
         <Style TargetType="TabItem">
-            <!-- <Setter Property="Header" Value="{Binding DataContext.SelectedDefaultConfiguration.Name}" /> -->
-        
+            <!-- Property Value defined in DefaultCOnfigurationsDetailViewModel -->
+            <Setter Property="Header" Value="{Binding DataContext.SelectedDefaultConfigurationTemplate.FullName}" />
+            
             <!-- Close Tab -->
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
@@ -24,7 +27,7 @@
                             </Grid.ColumnDefinitions>
         
                             <ContentControl VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,0,7,0" Content="{Binding}"></ContentControl>
-                            <Button Grid.Column="1" Content="x">
+                            <Button Grid.Column="1" Content=" x ">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="Click">
                                         <controls:CloseTabAction></controls:CloseTabAction>
@@ -44,54 +47,54 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!-- SelectedValuePath="FullName" -->
-        <DataGrid  ItemsSource="{Binding DefaultConfigurationTemplates, Mode=OneWay}"
+
+
+        <DataGrid  ItemsSource="{Binding DefaultConfigurationGroups, Mode=OneWay}"
                    x:Name="_defaultConfigurationTemplates"
                    AutoGenerateColumns="False"
                    AlternatingRowBackground="LightGray" 
                    CanUserAddRows="True" 
-                  
                    VerticalScrollBarVisibility="Visible"
                    HorizontalScrollBarVisibility="Visible"
-                   >
+                   CanUserResizeColumns="False"
+                   behavior:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
 
-            <!-- <DataGrid.GroupStyle> -->
-            <!--     <GroupStyle> -->
-            <!--         <GroupStyle.HeaderTemplate> -->
-            <!--             <DataTemplate> -->
-            <!--                 <StackPanel> -->
-            <!--                     <TextBlock Text="Test"></TextBlock> -->
-            <!--                 </StackPanel> -->
-            <!--             </DataTemplate> -->
-            <!--         </GroupStyle.HeaderTemplate> -->
-            <!--         <GroupStyle.ContainerStyle> -->
-            <!--             <Style TargetType="{x:Type GroupItem}"> -->
-            <!--                 <Setter Property="Template"> -->
-            <!--                     <Setter.Value> -->
-            <!--                         <ControlTemplate TargetType="{x:Type GroupItem}"> -->
-            <!--                             <Expander> -->
-            <!--                                 <Expander.Header> -->
-            <!--                                     <StackPanel Orientation="Horizontal"> -->
-            <!--                                         <TextBlock Text="Group 1"></TextBlock> -->
-            <!--                                     </StackPanel> -->
-            <!--                                 </Expander.Header> -->
-            <!--                                 <ItemsPresenter></ItemsPresenter> -->
-            <!--                             </Expander> -->
-            <!--                         </ControlTemplate> -->
-            <!--                     </Setter.Value> -->
-            <!--                 </Setter> -->
-            <!--             </Style> -->
-            <!--         </GroupStyle.ContainerStyle> -->
-            <!--     </GroupStyle> -->
-            <!-- </DataGrid.GroupStyle> -->
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock Text="Test"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander>
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Path=Commentary}"></TextBlock>
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsPresenter></ItemsPresenter>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
 
 
             <!-- Passing SelectedItem of DataGrid as a command parameter to the SelectedTemplateCommand-->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
-                    <prism:InvokeCommandAction Command="{Binding test, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_defaultConfigurationTemplates}" />
+                    <prism:InvokeCommandAction Command="{Binding SelectedTemplateCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_defaultConfigurationTemplates}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
@@ -101,7 +104,10 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <TabControl Grid.Row="1" Margin="10" prism:RegionManager.RegionName="DefaultConfigurationDetailsRegion" />
-     
+        <TabControl Grid.Row="1" 
+                    Margin="10" 
+                    prism:RegionManager.RegionName="DefaultConfigurationDetailsRegion" 
+                    />
+
     </Grid>
 </UserControl>

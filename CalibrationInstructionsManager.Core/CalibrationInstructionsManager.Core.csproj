@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\ResponsivenessBehavior.cs" />
+    <Compile Include="Behaviors\SetMinWidthToAutoAttachedBehavior.cs" />
     <Compile Include="Business\IRepository.cs" />
     <Compile Include="Business\Repository.cs" />
     <Compile Include="Commands\ApplicationCommands.cs" />

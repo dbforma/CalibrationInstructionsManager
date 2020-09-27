@@ -49,9 +49,9 @@ namespace DefaultConfigurations.Module.ViewModels
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.ContainsKey("defaultConfigurationTemplate"))
+            if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
-                SelectedDefaultConfigurationTemplate = navigationContext.Parameters.GetValue<DefaultConfigurationTemplate>("defaultConfigurationTemplate");
+                SelectedDefaultConfigurationTemplate = navigationContext.Parameters.GetValue<DefaultConfigurationTemplate>("selectedTemplate");
 
                 SelectedValuesAndTypes.Clear();
 
@@ -65,7 +65,7 @@ namespace DefaultConfigurations.Module.ViewModels
 
             }
 
-            var defaultConfiguration = navigationContext.Parameters["defaultConfigurationTemplate"] as DefaultConfigurationTemplate;
+            var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as DefaultConfigurationTemplate;
 
             if (defaultConfiguration != null)
             {
@@ -75,7 +75,7 @@ namespace DefaultConfigurations.Module.ViewModels
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            var defaultConfiguration = navigationContext.Parameters["defaultConfigurationTemplate"] as DefaultConfigurationTemplate;
+            var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as DefaultConfigurationTemplate;
         
             if (defaultConfiguration != null)
             {

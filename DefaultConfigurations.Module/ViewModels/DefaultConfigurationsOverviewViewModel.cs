@@ -20,8 +20,7 @@ namespace DefaultConfigurations.Module.ViewModels
 
         public ObservableCollection<DefaultConfigurationTemplate> DefaultConfigurationTemplates { get { return _defaultConfigurationTemplates; } set { SetProperty(ref _defaultConfigurationTemplates, value); } }
 
-        public DelegateCommand<DefaultConfigurationTemplate> SelectedTemplateCommand { get; set; }
-        public DelegateCommand<object> test { get; set; }
+        public DelegateCommand<object> SelectedTemplateCommand { get; set; }
 
         private IRegionManager _regionManager;
         private IPostgreSQLDatabase _database;
@@ -31,32 +30,25 @@ namespace DefaultConfigurations.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        /// <summary>
-        /// DelegateCommand<T> is a DefaultConfigurationTemplate, this is the parameter of the command
-        /// </summary>
-        /// <param name="database"></param>
-        /// <param name="regionManager"></param>
-
         public DefaultConfigurationsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
         {
-            
-            //SelectedTemplateCommand = new DelegateCommand<DefaultConfigurationTemplate>(TemplateSelected);
-            test = new DelegateCommand<object>(TemplateSelected);
-
             _database = database;
             _regionManager = regionManager;
 
+            SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
             DefaultConfigurationTemplates = new ObservableCollection<DefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates().ToList());
-
-            
         }
 
-
-
         #region Methods
-        private void TemplateSelected(object defaultConfigurationTemplate)
+
+        /// <summary>
+        /// Sending parameter "selectedTemplate" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
+        /// </summary>
+        /// <param name="selectedTemplate"></param>
+        private void TemplateSelected(object selectedTemplate)
         {
-            if (defaultConfigurationTemplate.ToString() == "{NewItemPlaceholder}")
+            // If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of DefaultConfigurationTemplate and add it to the Observable Collection
+            if (selectedTemplate.ToString() == "{NewItemPlaceholder}")
             {
                 _defaultConfigurationTemplates.Add(new DefaultConfigurationTemplate());
                 return;
@@ -64,33 +56,15 @@ namespace DefaultConfigurations.Module.ViewModels
 
 
             var parameters = new NavigationParameters();
-            parameters.Add("defaultConfigurationTemplate", defaultConfigurationTemplate);
+            parameters.Add("selectedTemplate", selectedTemplate);
 
-            if (defaultConfigurationTemplate != null)
+            if (selectedTemplate != null)
             {
                 _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView",
                     parameters);
             }
         }
 
-        /// <summary>
-        /// Sending parameter "defaultConfigurationTemplate" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
-        /// </summary>
-        /// <param name="defaultConfigurationTemplate"></param>
-        private void TemplateSelected(DefaultConfigurationTemplate defaultConfigurationTemplate)
-        {
-            if (defaultConfigurationTemplate == null)
-                return;
-
-            var parameters = new NavigationParameters();
-            parameters.Add("defaultConfigurationTemplate", defaultConfigurationTemplate);
-
-            if (defaultConfigurationTemplate != null)
-            {
-                _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView",
-                    parameters);
-            }
-        }
 
         /// <summary>
         /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
@@ -99,14 +73,11 @@ namespace DefaultConfigurations.Module.ViewModels
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             GetTemplatesFromDatabase();
-
-            DefaultConfigurationGroups = new ListCollectionView(DefaultConfigurationTemplates.ToList());
-            DefaultConfigurationGroups.GroupDescriptions.Add(new PropertyGroupDescription("Test"));
+            GroupByCommentary();
         }
 
         public ObservableCollection<DefaultConfigurationTemplate> GetTemplatesFromDatabase()
         {
-            //TODO: Resolve InvalidCastException: SelectedChangedEventArgs =/= DefaultConfigurationTemplate
             DefaultConfigurationTemplates.Clear();
 
             foreach (var item in _database.GetDefaultConfigurationTemplates().ToList())
@@ -122,7 +93,12 @@ namespace DefaultConfigurations.Module.ViewModels
             return true;
         }
 
-        
+        public void GroupByCommentary()
+        {
+            DefaultConfigurationGroups = new ListCollectionView(DefaultConfigurationTemplates.ToList());
+            DefaultConfigurationGroups.GroupDescriptions.Clear();
+            DefaultConfigurationGroups.GroupDescriptions.Add(new PropertyGroupDescription("Commentary"));
+        }
 
         #endregion // Methods
     }

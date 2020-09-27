@@ -6,63 +6,49 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
              prism:ViewModelLocator.AutoWireViewModel="True">
     <UserControl.Resources>
         <Style TargetType="TabItem">
-            <Setter Property="Header" Value="test" />
+            <Setter Property="Header" Value="{Binding DataContext.SelectedValuesAndTypes.TemplateId}" />
         </Style>
     </UserControl.Resources>
+
+
 
     <Grid x:Name="LayoutRoot">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
 
         </Grid.RowDefinitions>
-<!-- ObservableDefaultConfigurations -->
+
         <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedValuesAndTypes}" 
                   SelectionUnit="Cell"
-                  CanUserAddRows="True">
+                  CanUserAddRows="True"
+                  behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Name">
-                    <DataGridTemplateColumn.CellEditingTemplate>
+                <DataGridTemplateColumn Header="Parameter" >
+                    <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding TypeName}"></TextBlock>
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Parameter">
+                <DataGridTemplateColumn Header="Value">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Value}"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Test">
-                    <DataGridTemplateColumn.CellEditingTemplate>
-                        <DataTemplate>
-                            <ComboBox ItemsSource="{Binding TypeName}" SelectedItem="{Binding Path=TypeName}">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Path=TypeName}"></TextBlock>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellEditingTemplate>
-                </DataGridTemplateColumn>
-
-
-
 
             </DataGrid.Columns>
         </DataGrid>
