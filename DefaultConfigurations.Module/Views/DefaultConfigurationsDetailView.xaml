@@ -32,11 +32,11 @@
                   CanUserAddRows="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Name">
-                    <DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding TypeName}"></TextBlock>
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Parameter">

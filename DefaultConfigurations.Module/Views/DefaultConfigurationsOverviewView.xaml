@@ -36,6 +36,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <CollectionViewSource x:Key="_cvs" Source="{Binding DefaultConfigurationTemplates}"></CollectionViewSource>
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White" Margin="10">
@@ -50,9 +52,9 @@
                    AutoGenerateColumns="False"
                    AlternatingRowBackground="LightGray" 
                    CanUserAddRows="True" 
-                   ScrollViewer.CanContentScroll="True" 
-                   ScrollViewer.VerticalScrollBarVisibility="Visible"
-                   ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                  
+                   VerticalScrollBarVisibility="Visible"
+                   HorizontalScrollBarVisibility="Visible"
                    >
 
             <!-- <DataGrid.GroupStyle> -->
@@ -89,7 +91,7 @@
             <!-- Passing SelectedItem of DataGrid as a command parameter to the SelectedTemplateCommand-->
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
-                    <prism:InvokeCommandAction Command="{Binding SelectedTemplateCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_defaultConfigurationTemplates}" />
+                    <prism:InvokeCommandAction Command="{Binding test, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_defaultConfigurationTemplates}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 

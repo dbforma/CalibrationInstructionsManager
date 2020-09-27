@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
@@ -18,6 +21,7 @@ namespace DefaultConfigurations.Module.ViewModels
         public ObservableCollection<DefaultConfigurationTemplate> DefaultConfigurationTemplates { get { return _defaultConfigurationTemplates; } set { SetProperty(ref _defaultConfigurationTemplates, value); } }
 
         public DelegateCommand<DefaultConfigurationTemplate> SelectedTemplateCommand { get; set; }
+        public DelegateCommand<object> test { get; set; }
 
         private IRegionManager _regionManager;
         private IPostgreSQLDatabase _database;
@@ -35,16 +39,39 @@ namespace DefaultConfigurations.Module.ViewModels
 
         public DefaultConfigurationsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
         {
-            SelectedTemplateCommand = new DelegateCommand<DefaultConfigurationTemplate>(TemplateSelected);
+            
+            //SelectedTemplateCommand = new DelegateCommand<DefaultConfigurationTemplate>(TemplateSelected);
+            test = new DelegateCommand<object>(TemplateSelected);
+
             _database = database;
             _regionManager = regionManager;
-            
+
             DefaultConfigurationTemplates = new ObservableCollection<DefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates().ToList());
 
             
         }
 
+
+
         #region Methods
+        private void TemplateSelected(object defaultConfigurationTemplate)
+        {
+            if (defaultConfigurationTemplate.ToString() == "{NewItemPlaceholder}")
+            {
+                _defaultConfigurationTemplates.Add(new DefaultConfigurationTemplate());
+                return;
+            }
+
+
+            var parameters = new NavigationParameters();
+            parameters.Add("defaultConfigurationTemplate", defaultConfigurationTemplate);
+
+            if (defaultConfigurationTemplate != null)
+            {
+                _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView",
+                    parameters);
+            }
+        }
 
         /// <summary>
         /// Sending parameter "defaultConfigurationTemplate" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
