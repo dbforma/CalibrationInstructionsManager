@@ -1,104 +1,108 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Business;
+using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models;
+using CalibrationInstructionsManager.Core.Models.Templates;
 using Prism.Commands;
 using Prism.Regions;
 
 namespace MeasurementPoints.Module.ViewModels
 {
-    public class MeasurementPointsOverviewViewModel : ViewModelBase
+    public class MeasurementPointsOverviewViewModel : ViewModelBase, INavigationAware
     {
-        #region Properties
+        #region Properties & Commands
+
+        private ObservableCollection<MeasurementPointTemplate> _measurementPointTemplates;
+
+        public ObservableCollection<MeasurementPointTemplate> MeasurementPointTemplates { get { return _measurementPointTemplates; } set { SetProperty(ref _measurementPointTemplates, value); } }
+
+        public DelegateCommand<object> SelectedTemplateCommand { get; set; }
 
         private IRegionManager _regionManager;
-        private readonly IRepository _repository; // Verwendungsabhängigkeit aufgelöst
+        private IPostgreSQLDatabase _database;
 
-        private ObservableCollection<MeasurementPoint> _measurementPoints;
+        private ListCollectionView _measurementPointGroups;
+        public ListCollectionView MeasurementPointGroups { get { return _measurementPointGroups; } set { SetProperty(ref _measurementPointGroups, value); } }
 
-        public ObservableCollection<MeasurementPoint> MeasurementPoints
+        #endregion // Properties & Commands
+
+        public MeasurementPointsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
         {
-            get { return _measurementPoints; }
-            set { SetProperty(ref _measurementPoints, value); }
-        }
-
-        public List<string> PropertiesList { get; set; }
-
-        public DelegateCommand<MeasurementPoint> MeasurementPointSelectedCommand { get; private set; }
-
-        //public ObservableCollection<MeasurementPoint> MeasurementPointsCollection { get; set; }
-
-        #endregion // Properties
-
-        public MeasurementPointsOverviewViewModel(IRegionManager regionManager, IRepository repository)
-        {
-            MeasurementPointSelectedCommand = new DelegateCommand<MeasurementPoint>(MeasurementPointSelected);
+            _database = database;
             _regionManager = regionManager;
-            _repository = repository; // Erzeugungsabhängigkeit aufgelöst
-            MeasurementPoints =
-                new ObservableCollection<MeasurementPoint>(_repository
-                    .GetMeasurementPoints(5)); // Verwendungsabhängigkeit aufgelöst
-            PropertiesList = new List<string>(_repository.GetPropertiesList());
+
+            SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
+            MeasurementPointTemplates = new ObservableCollection<MeasurementPointTemplate>(database.GetMeasurementPointTemplates().ToList());
         }
 
         #region Methods
 
-        private void MeasurementPointSelected(MeasurementPoint measurementPoint)
+        /// <summary>
+        /// Sending parameter "selectedTemplate" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
+        /// </summary>
+        /// <param name="selectedTemplate"></param>
+        private void TemplateSelected(object selectedTemplate)
         {
-            if (measurementPoint == null)
-                return;
-            var parameters = new NavigationParameters();
-            parameters.Add("measurementPoint", measurementPoint);
-
-            if (measurementPoint != null)
+            // If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of DefaultConfigurationTemplate and add it to the Observable Collection
+            if (selectedTemplate.ToString() == "{NewItemPlaceholder}")
             {
-                _regionManager.RequestNavigate("MeasurementPointsDetailRegion", "MeasurementPointsDetailView",
+                _measurementPointTemplates.Add(new MeasurementPointTemplate());
+                return;
+            }
+
+
+            var parameters = new NavigationParameters();
+            parameters.Add("selectedTemplate", selectedTemplate);
+
+            if (selectedTemplate != null)
+            {
+                _regionManager.RequestNavigate("MeasurementPointDetailsRegion", "MeasurementPointsDetailView",
                     parameters);
             }
         }
 
 
         /// <summary>
-        /// Search bar implementation for Channel Settings
-        /// TODO: Adjust copy&paste code from old project
+        /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
         /// </summary>
-        // public virtual ObservableCollection<IChannelSettingTemplates> ChannelSettingsListContainsSearchKeyword { get; set; }
-        // private string _searchKeyword;
-        //
-        // public string SearchKeyword
-        // {
-        //     get
-        //     {
-        //         return _searchKeyword;
-        //     }
-        //
-        //     set
-        //     {
-        //         if (_searchKeyword == value)
-        //         {
-        //             return;
-        //         }
-        //         _searchKeyword = value;
-        //
-        //         if (value != null)
-        //         {
-        //             ChannelSettingsListContainsSearchKeyword = new ObservableCollection<IChannelSettingTemplates>();
-        //
-        //             var QueryChannelSettingsWithKeyword =
-        //                 from match in Templates.ChannelSettingTemplates
-        //                 where match.Name.ToLower().Contains(_searchKeyword.ToLower())
-        //                 select match;
-        //
-        //             ChannelSettingsListContainsSearchKeyword.AddRange(QueryChannelSettingsWithKeyword);
-        //         }
-        //
-        //         else
-        //         {
-        //             ChannelSettingsListContainsSearchKeyword = new ObservableCollection<IChannelSettingTemplates>(Templates.ChannelSettingsTemplates.ToList());
-        //         }
-        //     }
-        // }
+        /// <param name="navigationContext"></param>
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            GetTemplatesFromDatabase();
+            GroupByCommentary();
+        }
+
+        public ObservableCollection<MeasurementPointTemplate> GetTemplatesFromDatabase()
+        {
+            MeasurementPointTemplates.Clear();
+
+            foreach (var item in _database.GetMeasurementPointTemplates().ToList())
+            {
+                MeasurementPointTemplates.Add(item);
+            }
+
+            return MeasurementPointTemplates;
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+
+        public void GroupByCommentary()
+        {
+            MeasurementPointGroups = new ListCollectionView(MeasurementPointTemplates);
+            var groupDescription = new PropertyGroupDescription("Commentary");
+
+            MeasurementPointGroups.GroupDescriptions.Clear();
+
+            MeasurementPointGroups.GroupDescriptions.Add(groupDescription);
+        }
+
         #endregion // Methods
     }
 }

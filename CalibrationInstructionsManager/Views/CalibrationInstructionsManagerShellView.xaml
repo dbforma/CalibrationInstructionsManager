@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Title="{Binding Title}" Height="600" Width="1300"
+             Title="{Binding Title}" Height="800" Width="1300"
              xmlns:converters="clr-namespace:CalibrationInstructionsManager.Core.Converters;assembly=CalibrationInstructionsManager.Core"
              xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core">
     <Window.Resources>
@@ -30,7 +30,7 @@
                     behaviors:ResponsivenessBehavior.HorizontalBreakpoint="260">
 
             <Button Command="{Binding NavigateCommand}" CommandParameter="DatabaseLoginView" Content="L O G I N" Width="260" Height="40"></Button>
-            <Button Command="{Binding NavigateCommand}" CommandParameter="DefaultConfigurationTemplatesOverviewView" Content="D E F A U L T  C O N F I G U R A T I O N S" Width="260" Height="40"></Button>
+            <Button Command="{Binding NavigateCommand}" CommandParameter="DefaultConfigurationsOverviewView" Content="D E F A U L T  C O N F I G U R A T I O N S" Width="260" Height="40"></Button>
             <Button Command="{Binding NavigateCommand}" CommandParameter="MeasurementPointsOverviewView" Content="M E A S U R E M E N T  P O I N T S" Width="260" Height="40"></Button>
             <Button Command="{Binding NavigateCommand}" CommandParameter="ChannelSettingsOverviewView" Content="C H A N N E L  S E T T I N G S" Width="260" Height="40"></Button>
             <Button Command="{Binding ApplicationCommands.EnableButtonCommand}" CommandParameter="MeasurementPointsOverviewView" Content="W R I T E  T O  D A T A B A S E" Width="260" Height="40"></Button>

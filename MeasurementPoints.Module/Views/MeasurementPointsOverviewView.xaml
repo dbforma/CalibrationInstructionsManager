@@ -9,10 +9,12 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:controls="clr-namespace:CalibrationInstructionsManager.Core.Controls;assembly=CalibrationInstructionsManager.Core">
+             xmlns:controls="clr-namespace:CalibrationInstructionsManager.Core.Controls;assembly=CalibrationInstructionsManager.Core"
+             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core">
     <UserControl.Resources>
         <Style TargetType="TabItem">
-            <Setter Property="Header" Value="{Binding DataContext.SelectedMeasurementPoint.FullName}" />
+            <!-- Property Value defined in DefaultConfigurationsDetailViewModel -->
+            <Setter Property="Header" Value="{Binding DataContext.SelectedMeasurementPointTemplate.FullName}" />
 
             <!-- Close Tab -->
             <Setter Property="HeaderTemplate">
@@ -25,7 +27,7 @@
                             </Grid.ColumnDefinitions>
 
                             <ContentControl VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,0,7,0" Content="{Binding}"></ContentControl>
-                            <Button Grid.Column="1" Content="x">
+                            <Button Grid.Column="1" Content=" x ">
                                 <interactivity:Interaction.Triggers>
                                     <interactivity:EventTrigger EventName="Click">
                                         <controls:CloseTabAction></controls:CloseTabAction>
@@ -37,27 +39,90 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+
+
+        <!-- Grouping Source -->
+        <CollectionViewSource x:Key="_cvs" Source="{Binding MeasurementPointTemplates}"></CollectionViewSource>
+
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ComboBox Grid.Row="2" ItemsSource="{Binding PropertiesList}"></ComboBox>
-        <DataGrid Grid.Row="0" x:Name="MeasurementPoints" ItemsSource="{Binding MeasurementPoints, Mode=OneWay}" AlternatingRowBackground="LightGray" CanUserAddRows="False" AllowDrop="True">
+        <!-- DataTable bound to ListCollectionView _cvs-->
+        <DataGrid  ItemsSource="{Binding MeasurementPointGroups, Mode=OneWay}"
+                   x:Name="_measurementPointTemplates"
+                   AutoGenerateColumns="False"
+                   AlternatingRowBackground="LightGray" 
+                   CanUserAddRows="True" 
+                   VerticalScrollBarVisibility="Visible"
+                   HorizontalScrollBarVisibility="Visible"
+                   CanUserResizeColumns="False"
+                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
 
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <!-- TODO: Integrate style template for Expander.Header or find other solution-->
+                                        <!-- <Expander IsExpanded="True" Background="DarkGray" Style="{DynamicResource StretchExpanderStyle}"> -->
+                                        <Expander IsExpanded="True" Background="AliceBlue">
+                                            <Expander.Header>
+                                                <DockPanel>
+                                                    <!-- FlowDirection="LeftToRight" -->
+                                                    <!-- HorizontalAlignment="{Binding  -->
+                                                    <!--      HorizontalAlignment, -->
+                                                    <!--          RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, -->
+                                                    <!--          Mode=OneWayToSource}" -->
+                                                    <!-- LastChildFill="True"> -->
+                                                    <TextBlock Text="{Binding ItemCount, StringFormat={}[Total: {0}]}" FontStyle="Italic" FontSize="12"></TextBlock>
+                                                    <TextBlock Text="{Binding Name, StringFormat={} {0}}"  FontStyle="Italic" FontSize="12"></TextBlock>
+                                                </DockPanel>
+                                            </Expander.Header>
+
+                                            <!-- Content (FullName) is displayed in the ItemsPresenter -->
+                                            <ItemsPresenter></ItemsPresenter>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
+
+
+            <!-- Passing SelectedItem of DataGrid as a command parameter to the SelectedTemplateCommand-->
             <interactivity:Interaction.Triggers>
                 <interactivity:EventTrigger EventName="SelectionChanged">
-                    <prism:InvokeCommandAction Command="{Binding MeasurementPointSelectedCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=MeasurementPoints}" />
+                    <prism:InvokeCommandAction Command="{Binding SelectedTemplateCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_measurementPointTemplates}" />
                 </interactivity:EventTrigger>
             </interactivity:Interaction.Triggers>
+
+
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding FullName}" Header="Name" FontWeight="Bold"></DataGridTextColumn>
+                <!-- <DataGridTextColumn Binding="{Binding Commentary}" Header="Commentary"></DataGridTextColumn> -->
+            </DataGrid.Columns>
+
         </DataGrid>
 
-        <TabControl Grid.Row="1" Margin="10" prism:RegionManager.RegionName="MeasurementPointsDetailRegion" />
-
+        <TabControl Grid.Row="1" 
+                    prism:RegionManager.RegionName="MeasurementPointDetailsRegion" 
+                    />
 
     </Grid>
 </UserControl>

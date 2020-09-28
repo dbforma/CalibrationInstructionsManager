@@ -22,6 +22,7 @@ namespace CalibrationInstructionsManager.Login.ViewModels
         private string _password;
         private string _database;
 
+        // For User Input
         // public string Host { get { return _host; } set { SetProperty(ref _host, value); } }
         // public string Port { get { return _port; } set { SetProperty(ref _port, value); } }
         // public string Username { get { return _username; } set { SetProperty(ref _username, value); } }
@@ -29,19 +30,20 @@ namespace CalibrationInstructionsManager.Login.ViewModels
         // public string Database { get { return _database; } set { SetProperty(ref _database, value); } }
 
 
-        // TESTING
-        // public string Host { get; set; } = "10.0.2.167";
-        // public string Port { get; set; } = "5433";
-        // public string Username { get; set; } = "kalidb";
-        // public string Password { get; set; } = "imc";
-        // public string Database { get; set; } = "kalidb";
-
-        public string Host { get; set; } = "localhost";
-        public string Port { get; set; } = "5432";
-        public string Username { get; set; } = "postgres";
-        public string Password { get; set; } = "admin";
+        // IMC Kalidb
+        public string Host { get; set; } = "10.0.2.167";
+        public string Port { get; set; } = "5433";
+        public string Username { get; set; } = "kalidb";
+        public string Password { get; set; } = "imc";
         public string Database { get; set; } = "kalidb";
-        // END TESTING
+
+        // Localhos
+        // public string Host { get; set; } = "localhost";
+        // public string Port { get; set; } = "5432";
+        // public string Username { get; set; } = "postgres";
+        // public string Password { get; set; } = "admin";
+        // public string Database { get; set; } = "kalidb";
+      
 
 
         private IRegionManager _regionManager;

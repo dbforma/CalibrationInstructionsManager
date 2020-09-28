@@ -13,7 +13,7 @@
              Height="Auto">
     <UserControl.Resources>
         <Style TargetType="TabItem">
-            <!-- Property Value defined in DefaultCOnfigurationsDetailViewModel -->
+            <!-- Property Value defined in DefaultConfigurationsDetailViewModel -->
             <Setter Property="Header" Value="{Binding DataContext.SelectedDefaultConfigurationTemplate.FullName}" />
             
             <!-- Close Tab -->
@@ -40,7 +40,11 @@
             </Setter>
         </Style>
 
+
+        
+        <!-- Grouping Source -->
         <CollectionViewSource x:Key="_cvs" Source="{Binding DefaultConfigurationTemplates}"></CollectionViewSource>
+
     </UserControl.Resources>
 
     <Grid x:Name="LayoutRoot" Background="White" Margin="10">
@@ -49,7 +53,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
+        <!-- DataTable bound to ListCollectionView _cvs-->
         <DataGrid  ItemsSource="{Binding DefaultConfigurationGroups, Mode=OneWay}"
                    x:Name="_defaultConfigurationTemplates"
                    AutoGenerateColumns="False"
@@ -64,9 +68,7 @@
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="Test"></TextBlock>
-                            </StackPanel>
+
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                     <GroupStyle.ContainerStyle>
@@ -74,12 +76,23 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander>
+                                        <!-- TODO: Integrate style template for Expander.Header or find other solution-->
+                                        <!-- <Expander IsExpanded="True" Background="DarkGray" Style="{DynamicResource StretchExpanderStyle}"> -->
+                                        <Expander IsExpanded="True" Background="AliceBlue">
                                             <Expander.Header>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding Path=Commentary}"></TextBlock>
-                                                </StackPanel>
+                                                <DockPanel>
+                                                    <!-- FlowDirection="LeftToRight" -->
+                                                    <!-- HorizontalAlignment="{Binding  -->
+                                                           <!--      HorizontalAlignment, -->
+                                                           <!--          RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, -->
+                                                           <!--          Mode=OneWayToSource}" -->
+                                                           <!-- LastChildFill="True"> -->
+                                                    <TextBlock Text="{Binding ItemCount, StringFormat={}[Total: {0}]}" FontStyle="Italic" FontSize="12"></TextBlock>
+                                                    <TextBlock Text="{Binding Name, StringFormat={} {0}}"  FontStyle="Italic" FontSize="12"></TextBlock>
+                                                </DockPanel>
                                             </Expander.Header>
+                                            
+                                            <!-- Content (FullName, Commentary) is displayed in the ItemsPresenter -->
                                             <ItemsPresenter></ItemsPresenter>
                                         </Expander>
                                     </ControlTemplate>
@@ -98,14 +111,16 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
+
+            
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding FullName}" Header="Name"></DataGridTextColumn>
-                <DataGridTextColumn Binding="{Binding Commentary}" Header="Commentary"></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding FullName}" Header="Name" FontWeight="Bold"></DataGridTextColumn>
+                <!-- <DataGridTextColumn Binding="{Binding Commentary}" Header="Commentary"></DataGridTextColumn> -->
             </DataGrid.Columns>
+     
         </DataGrid>
 
         <TabControl Grid.Row="1" 
-                    Margin="10" 
                     prism:RegionManager.RegionName="DefaultConfigurationDetailsRegion" 
                     />
 

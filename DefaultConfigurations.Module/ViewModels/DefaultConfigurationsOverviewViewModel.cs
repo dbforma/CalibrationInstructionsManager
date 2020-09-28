@@ -95,9 +95,12 @@ namespace DefaultConfigurations.Module.ViewModels
 
         public void GroupByCommentary()
         {
-            DefaultConfigurationGroups = new ListCollectionView(DefaultConfigurationTemplates.ToList());
+            DefaultConfigurationGroups = new ListCollectionView(DefaultConfigurationTemplates);
+            var groupDescription = new PropertyGroupDescription("Commentary");
+
             DefaultConfigurationGroups.GroupDescriptions.Clear();
-            DefaultConfigurationGroups.GroupDescriptions.Add(new PropertyGroupDescription("Commentary"));
+
+            DefaultConfigurationGroups.GroupDescriptions.Add(groupDescription);
         }
 
         #endregion // Methods

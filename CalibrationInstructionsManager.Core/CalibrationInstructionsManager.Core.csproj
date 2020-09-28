@@ -108,6 +108,7 @@
     <Compile Include="Commands\IApplicationCommands.cs" />
     <Compile Include="Controls\CloseTabAction.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\OffsetDoubleConverter.cs" />
     <Compile Include="Data\IPostgreSQLDatabase.cs" />
     <Compile Include="Data\PostgreSQLDatabase.cs" />
     <Compile Include="Dialogs\IDialogServiceExtensions.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Models\Templates\IMeasurementPointTemplate.cs" />
     <Compile Include="Models\Templates\MeasurementPointTemplate.cs" />
     <Compile Include="Models\ValueTypes\DefaultConfigurationValueType.cs" />
+    <Compile Include="Models\ValueTypes\MeasurementPointValueType.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -155,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\ButtonStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\ExpanderHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

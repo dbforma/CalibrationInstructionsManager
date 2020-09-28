@@ -1,6 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using CalibrationInstructionsManager.Core;
+using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models;
+using CalibrationInstructionsManager.Core.Models.Templates;
+using CalibrationInstructionsManager.Core.Models.ValueTypes;
 using Prism.Regions;
 
 namespace MeasurementPoints.Module.ViewModels
@@ -8,40 +12,75 @@ namespace MeasurementPoints.Module.ViewModels
     public class MeasurementPointsDetailViewModel : ViewModelBase
     {
         #region Properties
+        private MeasurementPointTemplate _selectedMeasurementPointTemplate;
+        public MeasurementPointTemplate SelectedMeasurementPointTemplate { get { return _selectedMeasurementPointTemplate; } set { SetProperty(ref _selectedMeasurementPointTemplate, value); } }
 
-        private MeasurementPoint _selectedMeasurementPoint;
-        public MeasurementPoint SelectedMeasurementPoint { get { return _selectedMeasurementPoint; } set { SetProperty(ref _selectedMeasurementPoint, value); } }
+        private ObservableCollection<MeasurementPointValueType> _selectedValuesAndTypes;
+        public ObservableCollection<MeasurementPointValueType> SelectedValuesAndTypes { get { return _selectedValuesAndTypes; } set { SetProperty(ref _selectedValuesAndTypes, value); } }
 
-        private ObservableCollection<MeasurementPoint> _observableMeasurementPoint;
-        public ObservableCollection<MeasurementPoint> ObservableMeasurementPoint { get { return _observableMeasurementPoint; } set { SetProperty(ref _observableMeasurementPoint, value); } }
+        private ObservableCollection<MeasurementPointValueType> _observableValuesAndTypes;
+        public ObservableCollection<MeasurementPointValueType> ObservableValuesAndTypes { get { return _observableValuesAndTypes; } set { SetProperty(ref _observableValuesAndTypes, value); } }
 
+        private IPostgreSQLDatabase _database;
 
         #endregion // Properties
 
-        #region INavigationAware
+        public MeasurementPointsDetailViewModel(IPostgreSQLDatabase database)
+        {
+            _database = database;
+            ObservableValuesAndTypes = new ObservableCollection<MeasurementPointValueType>();
+            SelectedValuesAndTypes = new ObservableCollection<MeasurementPointValueType>();
+            GetValuesAndTypesFromDatabase();
+        }
+
+        #region Methods
+
+        public ObservableCollection<MeasurementPointValueType> GetValuesAndTypesFromDatabase()
+        {
+            ObservableValuesAndTypes.Clear();
+
+            foreach (var item in _database.GetMeasurementPointValueTypeParameters().ToList())
+            {
+                ObservableValuesAndTypes.Add(item);
+            }
+
+            return ObservableValuesAndTypes;
+        }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.ContainsKey("measurementPoint"))
+            if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
-                SelectedMeasurementPoint = navigationContext.Parameters.GetValue<MeasurementPoint>("measurementPoint");
+                SelectedMeasurementPointTemplate = navigationContext.Parameters.GetValue<MeasurementPointTemplate>("selectedTemplate");
+
+                SelectedValuesAndTypes.Clear();
+
+                for (int i = 0; i < ObservableValuesAndTypes.Count; i++)
+                {
+                    if (SelectedMeasurementPointTemplate.Id == ObservableValuesAndTypes[i].TemplateId)
+                    {
+                        SelectedValuesAndTypes.Add(ObservableValuesAndTypes[i]);
+                    }
+                }
+
             }
-            var measurementPoint = navigationContext.Parameters["measurementPoint"] as MeasurementPoint;
+
+            var measurementPoint = navigationContext.Parameters["selectedTemplate"] as MeasurementPointTemplate;
+
             if (measurementPoint != null)
             {
-                SelectedMeasurementPoint = measurementPoint;
+                SelectedMeasurementPointTemplate = measurementPoint;
             }
-            ObservableMeasurementPoint = new ObservableCollection<MeasurementPoint>();
-            ObservableMeasurementPoint.Add(SelectedMeasurementPoint);
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            var measurementPoint = navigationContext.Parameters["measurementPoint"] as MeasurementPoint;
+            var measurementPoint = navigationContext.Parameters["selectedTemplate"] as MeasurementPointTemplate;
+
             if (measurementPoint != null)
             {
                 // Create new instance if FullName does not match
-                return SelectedMeasurementPoint != null && SelectedMeasurementPoint.FullName == measurementPoint.FullName;
+                return SelectedMeasurementPointTemplate != null && SelectedMeasurementPointTemplate.FullName.ToLower() == measurementPoint.FullName.ToLower();
             }
             else
             {
@@ -52,26 +91,10 @@ namespace MeasurementPoints.Module.ViewModels
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
             base.OnNavigatedFrom(navigationContext);
+
         }
 
-        #endregion // INavigationAware
-
-        #region NavigationCommand
-
-        // public DelegateCommand<string> NavigateCommand { get; set; }
-        //
-        // public MeasurementPointDetailViewModel() 
-        // {
-        //     Title = "Measurement Point Detail ViewModel";
-        //     NavigateCommand = new DelegateCommand<string>(Navigate);
-        // }
-        //
-        // private void Navigate(string navigationPath)
-        // {
-        //    
-        // }
-
-        #endregion // NavigationCommand
+        #endregion // Methods
     }
 }
 

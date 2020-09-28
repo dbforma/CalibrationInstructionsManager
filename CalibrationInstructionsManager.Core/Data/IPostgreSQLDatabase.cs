@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.ValueTypes;
 
 
@@ -10,5 +11,7 @@ namespace CalibrationInstructionsManager.Core.Data
         bool IsConnectionEstablished();
         LinkedList<Models.Templates.DefaultConfigurationTemplate> GetDefaultConfigurationTemplates();
         LinkedList<DefaultConfigurationValueType> GetDefaultConfigurationValueTypeParameters();
+        LinkedList<MeasurementPointTemplate> GetMeasurementPointTemplates();
+        LinkedList<MeasurementPointValueType> GetMeasurementPointValueTypeParameters();
     }
 }

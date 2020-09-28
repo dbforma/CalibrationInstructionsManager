@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.ValueTypes;
 using Npgsql;
 
@@ -189,6 +190,138 @@ namespace CalibrationInstructionsManager.Core.Data
                 }
             }
             return defaultConfigurationValueTypeCatalog;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public LinkedList<MeasurementPointTemplate> GetMeasurementPointTemplates()
+        {
+            var measurementPointTemplates = new LinkedList<MeasurementPointTemplate>();
+            string queryStatement = @" 
+                                        SELECT md.idmkonfig, md.name, md.kommentar
+                                        FROM mkonfig md
+                                        ORDER BY idmkonfig";
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(queryStatement, connection))
+                        {
+                            connection.Open();
+                            using (NpgsqlDataReader dataReader = command.ExecuteReader())
+                            {
+                                var indexId = dataReader.GetOrdinal("idmkonfig");
+                                var indexName = dataReader.GetOrdinal("name");
+                                var indexCommentary = dataReader.GetOrdinal("kommentar");
+
+                                if (dataReader.HasRows)
+                                {
+                                    while (dataReader.Read())
+                                    {
+                                        var measurementPointTemplate = new MeasurementPointTemplate();
+
+                                        measurementPointTemplate.Id = (int)dataReader.GetValue(indexId);
+                                        measurementPointTemplate.FullName = dataReader.GetValue(indexName) as string;
+                                        measurementPointTemplate.Commentary = dataReader.GetValue(indexCommentary) as string;
+
+                                        measurementPointTemplates.AddLast(measurementPointTemplate);
+                                    }
+                                }
+                            }
+                        }
+
+                        connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            return measurementPointTemplates;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public LinkedList<MeasurementPointValueType> GetMeasurementPointValueTypeParameters()
+        {
+            var measurementPointTemplates = new LinkedList<MeasurementPointValueType>();
+            string queryStatement = @"  
+                                        SELECT mk.idmkonfig AS templateId, kl.wert AS parameterDefaultValue, mkv.beschreibung AS valueDescription, mkt.name AS parameterName, mkt.idmkonfigtyp AS typeId
+                                        FROM konfigliste kl
+                                        JOIN mkonfig mk
+                                        ON mk.idmkonfig = kl.mkonfig_id
+                                        JOIN mkonfigtyp mkt
+                                        ON mkt.idmkonfigtyp = kl.mkonfigtyp_id
+                                        JOIN mkonfigvalues mkv
+                                        ON mkv.idmkonfigvalues = kl.mkonfigvalues_id
+                                        ORDER BY kl.mkonfig_id";
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(queryStatement, connection))
+                        {
+                            connection.Open();
+                            using (NpgsqlDataReader dataReader = command.ExecuteReader())
+                            {
+
+                                var indexTemplateId = dataReader.GetOrdinal("templateId");
+                                var indexTypeId = dataReader.GetOrdinal("typeId");
+                                var indexParameterName = dataReader.GetOrdinal("parameterName");
+                                var indexDefaultValue = dataReader.GetOrdinal("parameterDefaultValue");
+                                var indexValueDescription = dataReader.GetOrdinal("valueDescription");
+
+                                if (dataReader.HasRows)
+                                {
+                                    while (dataReader.Read())
+                                    {
+                                        var measurementPointValueType = new MeasurementPointValueType();
+
+                                        measurementPointValueType.TemplateId = dataReader.GetInt32(indexTemplateId);
+                                        measurementPointValueType.TypeId = dataReader.GetInt32(indexTypeId);
+                                        measurementPointValueType.ParameterName = dataReader.GetString(indexParameterName);
+                                        if (dataReader.IsDBNull(indexDefaultValue))
+                                        {
+                                            Console.WriteLine("Default Value is null");
+                                        }
+                                        else
+                                        {
+                                            measurementPointValueType.DefaultValue = dataReader.GetDouble(indexDefaultValue);
+                                        }
+                                        measurementPointValueType.ValueDescription = dataReader.GetString(indexValueDescription);
+
+                                        measurementPointTemplates.AddLast(measurementPointValueType);
+
+                                    }
+                                }
+                            }
+                        }
+
+                        connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            return measurementPointTemplates;
         }
     }
 }

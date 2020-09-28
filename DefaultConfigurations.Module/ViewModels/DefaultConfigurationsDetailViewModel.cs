@@ -80,7 +80,7 @@ namespace DefaultConfigurations.Module.ViewModels
             if (defaultConfiguration != null)
             {
                 // Create new instance if FullName does not match
-                return SelectedDefaultConfigurationTemplate != null && SelectedDefaultConfigurationTemplate.FullName == defaultConfiguration.FullName;
+                return SelectedDefaultConfigurationTemplate != null && SelectedDefaultConfigurationTemplate.FullName.ToLower() == defaultConfiguration.FullName.ToLower();
             }
             else
             {

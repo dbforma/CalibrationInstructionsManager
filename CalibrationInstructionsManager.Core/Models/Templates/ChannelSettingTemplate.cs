@@ -1,9 +1,43 @@
-﻿namespace CalibrationInstructionsManager.Core.Models.Templates
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace CalibrationInstructionsManager.Core.Models.Templates
 {
     public class ChannelSettingTemplate : IChannelSettingTemplate
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Commentary { get; set; }
+        #region Properties
+
+        private int _id;
+        private string _fullName;
+        private string _commentary;
+        // private DefaultConfigurationType _defaultConfigurationType;
+
+        public int Id { get { return _id; } set { _id = value; OnPropertyChanged(); } }
+        public string FullName { get { return _fullName; } set { _fullName = value; OnPropertyChanged(); } }
+        public string Commentary { get { return _commentary; } set { _commentary = value; OnPropertyChanged(); } }
+        // public DefaultConfigurationType DefaultConfigurationType { get { return _defaultConfigurationType; } set { _defaultConfigurationType = value; OnPropertyChanged(); } }
+
+        #endregion // Properties
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion // INotifyPropertyChanged
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return String.Format($"{Id} {FullName} {Commentary}");
+        }
+
+        #endregion // Methods
     }
 }
