@@ -42,6 +42,7 @@ namespace DefaultConfigurations.Module.ViewModels
         private bool Filter(object defaultConfiguration)
 
         {
+            //TODO: Implement CultureIgnoreCase
             DefaultConfigurationTemplate defaultConfigurationTemplate = defaultConfiguration as DefaultConfigurationTemplate;
             if (!string.IsNullOrEmpty(FullNameFilter))
             {
