@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
@@ -6,10 +7,11 @@ using CalibrationInstructionsManager.Core.Models;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.ValueTypes;
 using Prism.Regions;
+using System.Globalization;
 
 namespace MeasurementPoints.Module.ViewModels
 {
-    public class MeasurementPointsDetailViewModel : ViewModelBase
+    public class MeasurementPointsDetailViewModel : ViewModelBase, INavigationAware
     {
         #region Properties
         private MeasurementPointTemplate _selectedMeasurementPointTemplate;
@@ -47,11 +49,20 @@ namespace MeasurementPoints.Module.ViewModels
             return ObservableValuesAndTypes;
         }
 
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
-                SelectedMeasurementPointTemplate = navigationContext.Parameters.GetValue<MeasurementPointTemplate>("selectedTemplate");
+                try
+                {
+                    SelectedMeasurementPointTemplate = navigationContext.Parameters.GetValue<MeasurementPointTemplate>("selectedTemplate");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return;
+                }
+                
 
                 SelectedValuesAndTypes.Clear();
 
@@ -73,7 +84,7 @@ namespace MeasurementPoints.Module.ViewModels
             }
         }
 
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        public bool IsNavigationTarget(NavigationContext navigationContext)
         {
             var measurementPoint = navigationContext.Parameters["selectedTemplate"] as MeasurementPointTemplate;
 
@@ -88,7 +99,7 @@ namespace MeasurementPoints.Module.ViewModels
             }
         }
 
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             base.OnNavigatedFrom(navigationContext);
 

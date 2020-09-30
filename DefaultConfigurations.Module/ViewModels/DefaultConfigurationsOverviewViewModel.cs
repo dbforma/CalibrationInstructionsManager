@@ -45,9 +45,10 @@ namespace DefaultConfigurations.Module.ViewModels
             DefaultConfigurationTemplate defaultConfigurationTemplate = defaultConfiguration as DefaultConfigurationTemplate;
             if (!string.IsNullOrEmpty(FullNameFilter))
             {
-                return defaultConfigurationTemplate.FullName.Contains(FullNameFilter) || defaultConfigurationTemplate.Commentary.Contains(FullNameFilter);
+                return defaultConfigurationTemplate.FullName.Contains(FullNameFilter) ||
+                       defaultConfigurationTemplate.Commentary.Contains(FullNameFilter);
             }
-            else return false;
+            else return true;
         }
 
 
@@ -87,8 +88,16 @@ namespace DefaultConfigurations.Module.ViewModels
 
             if (selectedTemplate != null)
             {
-                _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView",
-                    parameters);
+                try
+                {
+                    _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion",
+                        "DefaultConfigurationsDetailView",
+                        parameters);
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
 

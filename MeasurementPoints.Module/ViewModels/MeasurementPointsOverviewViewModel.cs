@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
@@ -60,8 +61,17 @@ namespace MeasurementPoints.Module.ViewModels
 
             if (selectedTemplate != null)
             {
-                _regionManager.RequestNavigate("MeasurementPointDetailsRegion", "MeasurementPointsDetailView",
-                    parameters);
+                try
+                {
+                    _regionManager.RequestNavigate("MeasurementPointDetailsRegion", "MeasurementPointsDetailView",
+                        parameters);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    return;
+                }
+                
             }
         }
 

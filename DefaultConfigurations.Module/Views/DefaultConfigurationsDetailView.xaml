@@ -29,7 +29,7 @@
 
         </Grid.RowDefinitions>
 
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ValuesTypesCollection}" 
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedValuesAndTypes}" 
                   SelectionUnit="Cell"
                   CanUserAddRows="True"
                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">

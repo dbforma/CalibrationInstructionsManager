@@ -59,10 +59,18 @@ namespace DefaultConfigurations.Module.ViewModels
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
                 //TODO: Handle InvalidCastException
-                SelectedDefaultConfigurationTemplate = navigationContext.Parameters.GetValue<DefaultConfigurationTemplate>("selectedTemplate");
-     
+                try
+                {
+                    SelectedDefaultConfigurationTemplate = (DefaultConfigurationTemplate)navigationContext.Parameters.GetValue<Object>("selectedTemplate");
+                }
+                catch
+                {
+                    return;
+                }
+                
+            
                 SelectedValuesAndTypes.Clear();
-
+            
                 for (int i = 0; i < ObservableValuesAndTypes.Count; i++)
                 {
                     if (SelectedDefaultConfigurationTemplate.Id == ObservableValuesAndTypes[i].ParameterId)
@@ -70,11 +78,11 @@ namespace DefaultConfigurations.Module.ViewModels
                         SelectedValuesAndTypes.Add(ObservableValuesAndTypes[i]);
                     }
                 }
-
+            
             }
-
+            
             var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as DefaultConfigurationTemplate;
-
+            
             if (defaultConfiguration != null)
             {
                 SelectedDefaultConfigurationTemplate = defaultConfiguration;
