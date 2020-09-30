@@ -34,7 +34,7 @@ namespace MeasurementPoints.Module.ViewModels
         {
             _database = database;
             _regionManager = regionManager;
-
+            
             SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
             MeasurementPointTemplates = new ObservableCollection<MeasurementPointTemplate>(database.GetMeasurementPointTemplates().ToList());
         }

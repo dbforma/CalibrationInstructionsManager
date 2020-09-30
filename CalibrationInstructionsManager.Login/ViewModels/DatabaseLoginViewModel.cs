@@ -37,7 +37,7 @@ namespace CalibrationInstructionsManager.Login.ViewModels
         public string Password { get; set; } = "imc";
         public string Database { get; set; } = "kalidb";
 
-        // Localhos
+        // Localhost
         // public string Host { get; set; } = "localhost";
         // public string Port { get; set; } = "5432";
         // public string Username { get; set; } = "postgres";

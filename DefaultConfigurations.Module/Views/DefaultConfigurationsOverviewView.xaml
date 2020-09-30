@@ -43,18 +43,25 @@
 
         
         <!-- Grouping Source -->
-        <CollectionViewSource x:Key="_cvs" Source="{Binding DefaultConfigurationTemplates}"></CollectionViewSource>
+        <!-- <CollectionViewSource x:Key="_cvs" Source="{Binding DefaultConfigurationTemplates}"> -->
+        <!--     ~1~ <CollectionViewSource.SortDescriptions> @1@ -->
+        <!--     ~1~      @1@ -->
+        <!--     ~1~ </CollectionViewSource.SortDescriptions> @1@ -->
+        <!-- </CollectionViewSource> -->
 
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="White" Margin="10">
+    <Grid x:Name="LayoutRoot" Background="White" Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        
         </Grid.RowDefinitions>
 
         <!-- DataTable bound to ListCollectionView _cvs-->
-        <DataGrid  ItemsSource="{Binding DefaultConfigurationGroups, Mode=OneWay}"
+        <!-- DefaultConfigurationTemplates -->
+        <DataGrid  ItemsSource="{Binding DefaultConfigurationCollection, Mode=OneWay}" IsSynchronizedWithCurrentItem="True"
                    x:Name="_defaultConfigurationTemplates"
                    AutoGenerateColumns="False"
                    AlternatingRowBackground="LightGray" 
@@ -62,13 +69,14 @@
                    VerticalScrollBarVisibility="Visible"
                    HorizontalScrollBarVisibility="Visible"
                    CanUserResizeColumns="False"
-                   behavior:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
+                   behavior:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True"
+                   >
 
             <DataGrid.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
-
+            
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                     <GroupStyle.ContainerStyle>
@@ -91,7 +99,7 @@
                                                     <TextBlock Text="{Binding Name, StringFormat={} {0}}"  FontStyle="Italic" FontSize="12"></TextBlock>
                                                 </DockPanel>
                                             </Expander.Header>
-                                            
+            
                                             <!-- Content (FullName, Commentary) is displayed in the ItemsPresenter -->
                                             <ItemsPresenter></ItemsPresenter>
                                         </Expander>
@@ -119,6 +127,12 @@
             </DataGrid.Columns>
      
         </DataGrid>
+        <StackPanel Grid.Row="2">
+            <TextBlock>Search by Name:</TextBlock>
+            <TextBox Text="{Binding FullNameFilter, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        </StackPanel>
+       
+        
 
         <TabControl Grid.Row="1" 
                     prism:RegionManager.RegionName="DefaultConfigurationDetailsRegion" 

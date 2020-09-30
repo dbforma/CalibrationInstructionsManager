@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.ValueTypes;
+using DefaultConfigurations.Module.Views;
 using Prism.Regions;
 
 namespace DefaultConfigurations.Module.ViewModels
 {
-    public class DefaultConfigurationsDetailViewModel : ViewModelBase
+    public class DefaultConfigurationsDetailViewModel : ViewModelBase, INavigationAware
     {
         #region Properties
         private DefaultConfigurationTemplate _selectedDefaultConfigurationTemplate;
@@ -21,17 +24,22 @@ namespace DefaultConfigurations.Module.ViewModels
         private ObservableCollection<DefaultConfigurationValueType> _observableValuesAndTypes;
         public ObservableCollection<DefaultConfigurationValueType> ObservableValuesAndTypes { get { return _observableValuesAndTypes; } set { SetProperty(ref _observableValuesAndTypes, value); } }
 
+        //TODO: Try ICollectionView to solve InvalidCastException or Eventaggregator and pass selected object from ViewModel to Detail-ViewModel
+        private ICollectionView _valuesTypesCollection;
+
+        public ICollectionView ValuesTypesCollection { get { return _valuesTypesCollection; } set { SetProperty(ref _valuesTypesCollection, value); } }
+
         private IPostgreSQLDatabase _database;
 
         #endregion // Properties
 
-        public DefaultConfigurationsDetailViewModel(IPostgreSQLDatabase database)
+        public DefaultConfigurationsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
          {
             _database = database;
             ObservableValuesAndTypes = new ObservableCollection<DefaultConfigurationValueType>();
             SelectedValuesAndTypes = new ObservableCollection<DefaultConfigurationValueType>();
             GetValuesAndTypesFromDatabase();
-        }
+         }
 
         #region Methods
 
@@ -43,16 +51,16 @@ namespace DefaultConfigurations.Module.ViewModels
             {
                 ObservableValuesAndTypes.Add(item);
             }
-
             return ObservableValuesAndTypes;
         }
 
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        public new void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
+                //TODO: Handle InvalidCastException
                 SelectedDefaultConfigurationTemplate = navigationContext.Parameters.GetValue<DefaultConfigurationTemplate>("selectedTemplate");
-
+     
                 SelectedValuesAndTypes.Clear();
 
                 for (int i = 0; i < ObservableValuesAndTypes.Count; i++)
@@ -73,7 +81,7 @@ namespace DefaultConfigurations.Module.ViewModels
             }
         }
 
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        public new bool IsNavigationTarget(NavigationContext navigationContext)
         {
             var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as DefaultConfigurationTemplate;
         
@@ -88,11 +96,10 @@ namespace DefaultConfigurations.Module.ViewModels
             }
         }
         
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        public new void OnNavigatedFrom(NavigationContext navigationContext)
         {
             base.OnNavigatedFrom(navigationContext);
-        
-        }
+            }
 
         #endregion // Methods
     }

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -25,8 +27,33 @@ namespace DefaultConfigurations.Module.ViewModels
         private IRegionManager _regionManager;
         private IPostgreSQLDatabase _database;
 
-        private ListCollectionView _defaultConfigurationGroups;
-        public ListCollectionView DefaultConfigurationGroups { get { return _defaultConfigurationGroups; } set { SetProperty(ref _defaultConfigurationGroups, value); } }
+        private ICollectionView _defaultConfigurationCollection;
+        public ICollectionView DefaultConfigurationCollection { get { return _defaultConfigurationCollection; } set { SetProperty(ref _defaultConfigurationCollection, value); } }
+        
+
+        /// <summary>
+        /// Filter logic for search bar
+        /// </summary>
+        /// <param name="defaultConfiguration"></param>
+        /// <returns></returns>
+        private string _fullNameFilter = string.Empty;
+        public string FullNameFilter { get { return _fullNameFilter; } set { SetProperty(ref _fullNameFilter, value); DefaultConfigurationCollection.Filter += Filter; } }
+
+        private bool Filter(object defaultConfiguration)
+
+        {
+            DefaultConfigurationTemplate defaultConfigurationTemplate = defaultConfiguration as DefaultConfigurationTemplate;
+            if (!string.IsNullOrEmpty(FullNameFilter))
+            {
+                return defaultConfigurationTemplate.FullName.Contains(FullNameFilter) || defaultConfigurationTemplate.Commentary.Contains(FullNameFilter);
+            }
+            else return false;
+        }
+
+
+        //
+        // private ListCollectionView _defaultConfigurationCollection;
+        // public ListCollectionView DefaultConfigurationCollection { get { return _defaultConfigurationCollection; } set { SetProperty(ref _defaultConfigurationCollection, value); } }
 
         #endregion // Properties & Commands
 
@@ -36,7 +63,7 @@ namespace DefaultConfigurations.Module.ViewModels
             _regionManager = regionManager;
 
             SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
-            DefaultConfigurationTemplates = new ObservableCollection<DefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates().ToList());
+            DefaultConfigurationTemplates = new ObservableCollection<DefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates());
         }
 
         #region Methods
@@ -70,7 +97,7 @@ namespace DefaultConfigurations.Module.ViewModels
         /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
         /// </summary>
         /// <param name="navigationContext"></param>
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        public new void OnNavigatedTo(NavigationContext navigationContext)
         {
             GetTemplatesFromDatabase();
             GroupByCommentary();
@@ -80,7 +107,7 @@ namespace DefaultConfigurations.Module.ViewModels
         {
             DefaultConfigurationTemplates.Clear();
 
-            foreach (var item in _database.GetDefaultConfigurationTemplates().ToList())
+            foreach (var item in _database.GetDefaultConfigurationTemplates())
             {
                 DefaultConfigurationTemplates.Add(item);
             }
@@ -88,19 +115,20 @@ namespace DefaultConfigurations.Module.ViewModels
             return DefaultConfigurationTemplates;
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public new bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;
         }
 
         public void GroupByCommentary()
         {
-            DefaultConfigurationGroups = new ListCollectionView(DefaultConfigurationTemplates);
+            // DefaultConfigurationCollection = new ListCollectionView(DefaultConfigurationTemplates);
+            DefaultConfigurationCollection = CollectionViewSource.GetDefaultView(DefaultConfigurationTemplates);
             var groupDescription = new PropertyGroupDescription("Commentary");
 
-            DefaultConfigurationGroups.GroupDescriptions.Clear();
+            DefaultConfigurationCollection.GroupDescriptions.Clear();
 
-            DefaultConfigurationGroups.GroupDescriptions.Add(groupDescription);
+            DefaultConfigurationCollection.GroupDescriptions.Add(groupDescription);
         }
 
         #endregion // Methods

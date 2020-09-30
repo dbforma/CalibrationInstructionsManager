@@ -15,7 +15,7 @@ namespace CalibrationInstructionsManager.Core.Models.Templates
         private string _fullName;
         private string _commentary;
         // private DefaultConfigurationType _defaultConfigurationType;
-        
+
         public int Id { get { return _id; } set { _id = value; OnPropertyChanged(); } }
         public string FullName { get { return _fullName; } set { _fullName = value; OnPropertyChanged(); } }
         public string Commentary { get { return _commentary; } set { _commentary = value; OnPropertyChanged(); } }
@@ -42,6 +42,7 @@ namespace CalibrationInstructionsManager.Core.Models.Templates
         }
 
         #endregion // Methods
+
     }
 
     //TODO: Implement more types, database needs new column: type
