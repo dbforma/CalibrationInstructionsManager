@@ -1,14 +1,9 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace CalibrationInstructionsManager.Core.Models.Templates
 {
     public interface IDefaultConfigurationTemplate : INotifyPropertyChanged
     {
-        // int Id { get; set; }
-        // string Name { get; set; }
-        // string Commentary { get; set; }
-
         #region Properties
 
         int Id { get; set; }

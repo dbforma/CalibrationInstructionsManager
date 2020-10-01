@@ -13,5 +13,7 @@ namespace CalibrationInstructionsManager.Core.Data
         LinkedList<DefaultConfigurationValueType> GetDefaultConfigurationValueTypeParameters();
         LinkedList<MeasurementPointTemplate> GetMeasurementPointTemplates();
         LinkedList<MeasurementPointValueType> GetMeasurementPointValueTypeParameters();
+        LinkedList<ChannelSettingTemplate> GetChannelSettingTemplates();
+        LinkedList<ChannelSettingParameters> GetChannelSettingParameters();
     }
 }

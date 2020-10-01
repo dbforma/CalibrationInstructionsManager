@@ -2,7 +2,7 @@
 
 namespace CalibrationInstructionsManager.Core.Models.Templates
 {
-    public interface IMeasurementPointTemplate
+    public interface IMeasurementPointTemplate : INotifyPropertyChanged
     {
         #region Properties
 

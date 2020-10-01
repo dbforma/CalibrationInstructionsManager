@@ -3,22 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Title="{Binding Title}" Height="800" Width="1300"
-             xmlns:converters="clr-namespace:CalibrationInstructionsManager.Core.Converters;assembly=CalibrationInstructionsManager.Core"
+             Title="{Binding Title}" Height="800" Width="1315"
              xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core">
+    <!-- Resources -->
     <Window.Resources>
-        <!-- <Style TargetType="TabItem"> -->
-        <!--     <Setter Property="Header" Value="{Binding DataContext.Title}"/> -->
-        <!-- </Style> -->
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibility"></converters:BoolToVisibilityConverter>
+
     </Window.Resources>
+
+
     <Grid Background="AliceBlue">
+        <!-- Grid Definitions -->
         <Grid.RowDefinitions>
             <RowDefinition Height="20"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -26,6 +25,7 @@
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
+        <!-- Navigation StackPanel -->
         <StackPanel Grid.Row="1" Grid.Column="0" 
                     behaviors:ResponsivenessBehavior.HorizontalBreakpoint="260">
 
@@ -36,6 +36,7 @@
             <Button Command="{Binding ApplicationCommands.EnableButtonCommand}" CommandParameter="MeasurementPointsOverviewView" Content="W R I T E  T O  D A T A B A S E" Width="260" Height="40"></Button>
         </StackPanel>
 
+        <!-- Navigation Region -->
         <ContentControl Grid.Column="0" Grid.Row="4" prism:RegionManager.RegionName="NavigationRegion"></ContentControl>
 
     </Grid>

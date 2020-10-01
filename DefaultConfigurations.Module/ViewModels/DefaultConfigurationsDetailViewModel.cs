@@ -1,33 +1,25 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.ValueTypes;
-using DefaultConfigurations.Module.Views;
 using Prism.Regions;
 
 namespace DefaultConfigurations.Module.ViewModels
 {
-    public class DefaultConfigurationsDetailViewModel : ViewModelBase, INavigationAware
+    public class DefaultConfigurationsDetailViewModel : ViewModelBase
     {
         #region Properties
-        private DefaultConfigurationTemplate _selectedDefaultConfigurationTemplate;
-        public DefaultConfigurationTemplate SelectedDefaultConfigurationTemplate { get { return _selectedDefaultConfigurationTemplate; } set { SetProperty(ref _selectedDefaultConfigurationTemplate, value); } }
+        private IDefaultConfigurationTemplate _selectedDefaultConfigurationTemplate;
+        public IDefaultConfigurationTemplate SelectedDefaultConfigurationTemplate { get { return _selectedDefaultConfigurationTemplate; } set { SetProperty(ref _selectedDefaultConfigurationTemplate, value); } }
 
-        private ObservableCollection<DefaultConfigurationValueType> _selectedValuesAndTypes;
-        public ObservableCollection<DefaultConfigurationValueType> SelectedValuesAndTypes { get { return _selectedValuesAndTypes; } set { SetProperty(ref _selectedValuesAndTypes, value); } }
+        private ObservableCollection<DefaultConfigurationValueType> _observableSelectedParameters;
+        public ObservableCollection<DefaultConfigurationValueType> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<DefaultConfigurationValueType> _observableValuesAndTypes;
-        public ObservableCollection<DefaultConfigurationValueType> ObservableValuesAndTypes { get { return _observableValuesAndTypes; } set { SetProperty(ref _observableValuesAndTypes, value); } }
-
-        //TODO: Try ICollectionView to solve InvalidCastException or Eventaggregator and pass selected object from ViewModel to Detail-ViewModel
-        private ICollectionView _valuesTypesCollection;
-
-        public ICollectionView ValuesTypesCollection { get { return _valuesTypesCollection; } set { SetProperty(ref _valuesTypesCollection, value); } }
+        private ObservableCollection<DefaultConfigurationValueType> _observableParameterCollection;
+        public ObservableCollection<DefaultConfigurationValueType> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
         private IPostgreSQLDatabase _database;
 
@@ -36,8 +28,8 @@ namespace DefaultConfigurations.Module.ViewModels
         public DefaultConfigurationsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
          {
             _database = database;
-            ObservableValuesAndTypes = new ObservableCollection<DefaultConfigurationValueType>();
-            SelectedValuesAndTypes = new ObservableCollection<DefaultConfigurationValueType>();
+            ObservableParameterCollection = new ObservableCollection<DefaultConfigurationValueType>();
+            ObservableSelectedParameters = new ObservableCollection<DefaultConfigurationValueType>();
             GetValuesAndTypesFromDatabase();
          }
 
@@ -45,43 +37,44 @@ namespace DefaultConfigurations.Module.ViewModels
 
         public ObservableCollection<DefaultConfigurationValueType> GetValuesAndTypesFromDatabase()
         {
-            ObservableValuesAndTypes.Clear();
+            ObservableParameterCollection.Clear();
 
             foreach (var item in _database.GetDefaultConfigurationValueTypeParameters().ToList())
             {
-                ObservableValuesAndTypes.Add(item);
+                ObservableParameterCollection.Add(item);
             }
-            return ObservableValuesAndTypes;
+            return ObservableParameterCollection;
         }
 
-        public new void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
-                //TODO: Handle InvalidCastException
+                //TODO: Handle InvalidCastException in a more proper manner
                 try
                 {
-                    SelectedDefaultConfigurationTemplate = (DefaultConfigurationTemplate)navigationContext.Parameters.GetValue<Object>("selectedTemplate");
+                    SelectedDefaultConfigurationTemplate = (IDefaultConfigurationTemplate)navigationContext.Parameters.GetValue<Object>("selectedTemplate");
                 }
-                catch
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return;
                 }
                 
             
-                SelectedValuesAndTypes.Clear();
+                ObservableSelectedParameters.Clear();
             
-                for (int i = 0; i < ObservableValuesAndTypes.Count; i++)
+                for (int i = 0; i < ObservableParameterCollection.Count; i++)
                 {
-                    if (SelectedDefaultConfigurationTemplate.Id == ObservableValuesAndTypes[i].ParameterId)
+                    if (SelectedDefaultConfigurationTemplate.Id == ObservableParameterCollection[i].ParameterId)
                     {
-                        SelectedValuesAndTypes.Add(ObservableValuesAndTypes[i]);
+                        ObservableSelectedParameters.Add(ObservableParameterCollection[i]);
                     }
                 }
             
             }
             
-            var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as DefaultConfigurationTemplate;
+            var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as IDefaultConfigurationTemplate;
             
             if (defaultConfiguration != null)
             {
@@ -89,22 +82,21 @@ namespace DefaultConfigurations.Module.ViewModels
             }
         }
 
-        public new bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as DefaultConfigurationTemplate;
+            var defaultConfiguration = navigationContext.Parameters["selectedTemplate"] as IDefaultConfigurationTemplate;
         
             if (defaultConfiguration != null)
             {
-                // Create new instance if FullName does not match
-                return SelectedDefaultConfigurationTemplate != null && SelectedDefaultConfigurationTemplate.FullName.ToLower() == defaultConfiguration.FullName.ToLower();
+                // Create new instance if Id does not match and parameter is not null
+                return SelectedDefaultConfigurationTemplate != null && SelectedDefaultConfigurationTemplate.Id == defaultConfiguration.Id;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
+            
         }
         
-        public new void OnNavigatedFrom(NavigationContext navigationContext)
+        public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             base.OnNavigatedFrom(navigationContext);
             }

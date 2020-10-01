@@ -8,49 +8,33 @@
              xmlns:prism="http://prismlibrary.com/"
              xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
              prism:ViewModelLocator.AutoWireViewModel="True">
+    <!-- Resources -->
     <UserControl.Resources>
         <Style TargetType="TabItem">
-            <Setter Property="Header" Value="{Binding DataContext.SelectedValuesAndTypes.TemplateId}" />
+            <Setter Property="Header" Value="{Binding DataContext.ObservableSelectedParameters.TemplateId}" />
         </Style>
     </UserControl.Resources>
-
-
-
-    <Grid x:Name="LayoutRoot">
+    
+    <Grid>
+        <!-- Grid Definitions -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-
         </Grid.RowDefinitions>
 
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedValuesAndTypes}" 
-                  SelectionUnit="Cell"
+        <!-- Selected Parameters -->
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ObservableSelectedParameters}" 
                   CanUserAddRows="True"
                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Parameter" >
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding TypeName}"></TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Value">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Value}"></TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-            </DataGrid.Columns>
+                <DataGridTextColumn Header="Typ" Binding="{Binding TypeName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Value" Binding="{Binding Value}"></DataGridTextColumn>
+                </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>

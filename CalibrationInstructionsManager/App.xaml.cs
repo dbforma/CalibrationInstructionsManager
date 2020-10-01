@@ -1,11 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using CalibrationInstructionsManager.Core.Business;
 using CalibrationInstructionsManager.Core.Commands;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Dialogs.ViewModels;
 using CalibrationInstructionsManager.Core.Dialogs.Views;
-using CalibrationInstructionsManager.Core.Models;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Regions;
 using Prism.Ioc;
@@ -24,8 +22,6 @@ namespace CalibrationInstructionsManager
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
-            containerRegistry.RegisterSingleton<IRepository, Repository>();
-            containerRegistry.Register<IMeasurementPoint, MeasurementPoint>();
             containerRegistry.RegisterDialog<MessageDialogView, MessageDialogViewModel>();
             containerRegistry.RegisterSingleton<IPostgreSQLDatabase, PostgreSQLDatabase>();
             containerRegistry.Register<IChannelSettingTemplate, ChannelSettingTemplate>();

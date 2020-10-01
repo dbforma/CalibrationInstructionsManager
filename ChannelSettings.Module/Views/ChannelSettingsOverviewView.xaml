@@ -7,8 +7,115 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:converters="clr-namespace:CalibrationInstructionsManager.Core.Converters;assembly=CalibrationInstructionsManager.Core"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="clr-namespace:CalibrationInstructionsManager.Core.Controls;assembly=CalibrationInstructionsManager.Core"
+             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
              prism:ViewModelLocator.AutoWireViewModel="True">
-    <Grid>
-            
+    <UserControl.Resources>
+        <!-- Prefix Converter -->
+        <converters:PrefixValueConverter x:Key="_prefixValueConverter"></converters:PrefixValueConverter>
+
+        <!-- Close Tab -->
+        <Style TargetType="TabItem">
+            <!-- Property Value defined in DefaultConfigurationsDetailViewModel -->
+            <Setter Property="Header" Value="{Binding DataContext.SelectedChannelSettingTemplate.FullName, Converter={StaticResource _prefixValueConverter}}" />
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <ContentControl VerticalAlignment="Center" HorizontalAlignment="Center" Margin="7,0,7,0" Content="{Binding}"></ContentControl>
+                            <Button Grid.Column="1" Content=" x ">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Click">
+                                        <controls:CloseTabAction></controls:CloseTabAction>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <!-- Grid Definitions -->
+    <Grid Background="White" Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Quicksearch Bar -->
+        <StackPanel Grid.Row="0">
+            <TextBlock>Quicksearch:</TextBlock>
+            <TextBox Text="{Binding UserInputKeyword, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        </StackPanel>
+
+        <!-- Default Configuration Overview -->
+        <DataGrid  ItemsSource="{Binding ChannelSettingCollectionView, Mode=OneWay}" IsSynchronizedWithCurrentItem="True"
+                   x:Name="_channelSettingTemplates"
+                   AutoGenerateColumns="False"
+                   AlternatingRowBackground="LightGray" 
+                   CanUserAddRows="True" 
+                   VerticalScrollBarVisibility="Visible"
+                   HorizontalScrollBarVisibility="Visible"
+                   CanUserResizeColumns="False"
+                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True"
+                   Grid.Row="1"
+                   >
+
+            <!-- Datagrid Grouping -->
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="True" Background="AliceBlue">
+                                            <Expander.Header>
+                                                <DockPanel>
+                                                    <TextBlock Text="{Binding ItemCount, StringFormat={}[Total: {0}]}" FontStyle="Italic" FontSize="12"></TextBlock>
+                                                    <TextBlock Text="{Binding Name, StringFormat={} {0}}"  FontStyle="Italic" FontSize="12"></TextBlock>
+                                                </DockPanel>
+                                            </Expander.Header>
+
+                                            <!-- Content (FullName) is displayed in the ItemsPresenter -->
+                                            <ItemsPresenter></ItemsPresenter>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
+
+            <!-- Passing SelectedItem of DataGrid as a command parameter to the SelectedTemplateCommand-->
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <prism:InvokeCommandAction Command="{Binding SelectedTemplateCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_channelSettingTemplates}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <!-- DataGrid.Column -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding FullName}" Header="Name" FontWeight="Bold"></DataGridTextColumn>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+        <!-- TabControl for each selected Item -->
+        <TabControl Grid.Row="2" 
+                    prism:RegionManager.RegionName="ChannelSettingDetailsRegion" 
+                    />
+
     </Grid>
 </UserControl>

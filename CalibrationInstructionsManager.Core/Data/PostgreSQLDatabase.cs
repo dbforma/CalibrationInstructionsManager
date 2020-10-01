@@ -131,7 +131,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
         /// <summary>
         /// Queries the table kkonfigtyp and kkonfigliste to get corresponding attributes of each default configuration dataset
-        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.DataTypes
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
         /// </summary>
         public LinkedList<DefaultConfigurationValueType> GetDefaultConfigurationValueTypeParameters()
         {
@@ -194,7 +194,8 @@ namespace CalibrationInstructionsManager.Core.Data
 
 
         /// <summary>
-        /// 
+        /// Queries the table mkonfig to get corresponding attributes of each measurement point dataset
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Templates
         /// </summary>
         /// <returns></returns>
         public LinkedList<MeasurementPointTemplate> GetMeasurementPointTemplates()
@@ -251,7 +252,8 @@ namespace CalibrationInstructionsManager.Core.Data
         }
 
         /// <summary>
-        /// 
+        /// Queries the table konfigliste, mkonfig, mkonfigtyp and mkonfigvalues to get corresponding attributes of each measurement point dataset
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
         /// </summary>
         public LinkedList<MeasurementPointValueType> GetMeasurementPointValueTypeParameters()
         {
@@ -297,7 +299,7 @@ namespace CalibrationInstructionsManager.Core.Data
                                         measurementPointValueType.ParameterName = dataReader.GetString(indexParameterName);
                                         if (dataReader.IsDBNull(indexDefaultValue))
                                         {
-                                            Console.WriteLine("Default Value is null");
+                                            Console.WriteLine("Value is null");
                                         }
                                         else
                                         {
@@ -322,6 +324,150 @@ namespace CalibrationInstructionsManager.Core.Data
                 }
             }
             return measurementPointTemplates;
+        }
+
+        /// <summary>
+        /// Queries the table idkvorlage to get corresponding attributes of each channel setting dataset
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Templates
+        /// </summary>
+        /// <returns></returns>
+
+        public LinkedList<ChannelSettingTemplate> GetChannelSettingTemplates()
+        {
+            var channelSettingTemplateCatalog = new LinkedList<ChannelSettingTemplate>();
+            string queryStatement = @" 
+                                        SELECT idkvorlage, name
+                                        FROM kvorlage
+                                        ORDER BY idkvorlage";
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(queryStatement, connection))
+                        {
+                            connection.Open();
+                            using (NpgsqlDataReader dataReader = command.ExecuteReader())
+                            {
+                                var indexId = dataReader.GetOrdinal("idkvorlage");
+                                var indexName = dataReader.GetOrdinal("name");
+
+                                if (dataReader.HasRows)
+                                {
+                                    while (dataReader.Read())
+                                    {
+                                        var channelSettingTemplate = new ChannelSettingTemplate();
+
+                                        channelSettingTemplate.Id = (int)dataReader.GetValue(indexId);
+                                        channelSettingTemplate.FullName = dataReader.GetValue(indexName) as string;
+
+                                        channelSettingTemplateCatalog.AddLast(channelSettingTemplate);
+                                    }
+                                }
+                            }
+                        }
+
+                        connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            return channelSettingTemplateCatalog;
+        }
+
+        /// <summary>
+        /// Queries the table XXX to get corresponding attributes of each channel setting dataset
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
+        /// </summary>
+        public LinkedList<ChannelSettingParameters> GetChannelSettingParameters()
+        {
+            var channelSettingParameterCatalog = new LinkedList<ChannelSettingParameters>();
+            string queryStatement = @"  
+                                        SELECT mp.idmpunkt AS parameterId, kv.idkvorlage AS templateId, mp.vorgabe AS defaultValue, mp.unsicherheit AS uncertaintyValue, 
+                                            mp.index AS parameterIndex, mp.anzahl AS parameterQuantity, vt.name AS typeName, vt.idvorgabetyp AS typeId
+                                        FROM mpunkt mp
+                                        JOIN kvorlage kv
+                                        ON kv.idkvorlage = mp.kvorlage_id
+                                        JOIN vorgabetyp vt
+                                        ON vt.idvorgabetyp = mp.vorgabetyp_id";
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(queryStatement, connection))
+                        {
+                            connection.Open();
+                            using (NpgsqlDataReader dataReader = command.ExecuteReader())
+                            {
+
+                                var indexParameterId = dataReader.GetOrdinal("parameterId");
+                                var indexTemplateId = dataReader.GetOrdinal("templateId");
+                                var indexDefaultValue = dataReader.GetOrdinal("defaultValue");
+                                var indexUncertaintyValue = dataReader.GetOrdinal("uncertaintyValue");
+                                var indexParameterIndex = dataReader.GetOrdinal("parameterIndex");
+                                var indexParameterQuantity = dataReader.GetOrdinal("parameterQuantity");
+                                var indexTypeName = dataReader.GetOrdinal("typeName");
+                                var indexTypeId = dataReader.GetOrdinal("typeId");
+
+                                if (dataReader.HasRows)
+                                {
+                                    while (dataReader.Read())
+                                    {
+                                        var channelSettingParameter = new ChannelSettingParameters();
+
+                                        channelSettingParameter.ParameterId = dataReader.GetInt32(indexParameterId);
+                                        channelSettingParameter.TemplateId = dataReader.GetInt32(indexTemplateId);
+                                        channelSettingParameter.ParameterIndex = dataReader.GetInt32(indexParameterIndex);
+                                        channelSettingParameter.ParameterQuantity = dataReader.GetInt32(indexParameterQuantity);
+                                        channelSettingParameter.TypeName = dataReader.GetString(indexTypeName);
+                                        channelSettingParameter.TypeId = dataReader.GetInt32(indexTypeId);
+
+                                        if (dataReader.IsDBNull(indexDefaultValue))
+                                        {
+                                            Console.WriteLine("Default Value is null");
+                                        }
+                                        else
+                                        {
+                                            channelSettingParameter.DefaultValue = dataReader.GetDouble(indexDefaultValue);
+                                        }
+
+                                        if (dataReader.IsDBNull(indexUncertaintyValue))
+                                        {
+                                            Console.WriteLine("Uncertainty Value is null");
+                                        }
+                                        else
+                                        {
+                                            channelSettingParameter.UncertaintyValue = dataReader.GetDouble(indexUncertaintyValue);
+                                        }
+
+                                        channelSettingParameterCatalog.AddLast(channelSettingParameter);
+                                    }
+                                }
+                            }
+                        }
+
+                        connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            return channelSettingParameterCatalog;
         }
     }
 }

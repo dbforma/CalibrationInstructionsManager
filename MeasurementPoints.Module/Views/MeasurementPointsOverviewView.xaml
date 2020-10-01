@@ -10,13 +10,18 @@
              prism:ViewModelLocator.AutoWireViewModel="True"
              xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:CalibrationInstructionsManager.Core.Controls;assembly=CalibrationInstructionsManager.Core"
-             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core">
-    <UserControl.Resources>
-        <Style TargetType="TabItem">
-            <!-- Property Value defined in DefaultConfigurationsDetailViewModel -->
-            <Setter Property="Header" Value="{Binding DataContext.SelectedMeasurementPointTemplate.FullName}" />
+             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
+             xmlns:converters="clr-namespace:CalibrationInstructionsManager.Core.Converters;assembly=CalibrationInstructionsManager.Core">
 
-            <!-- Close Tab -->
+    <!-- Resources -->
+    <UserControl.Resources>
+        <!-- Prefix Converter -->
+        <converters:PrefixValueConverter x:Key="_prefixValueConverter"></converters:PrefixValueConverter>
+
+        <!-- Close Tab -->
+        <Style TargetType="TabItem">
+            <!-- Property Value defined in MeasurementPointDetailViewModel -->
+            <Setter Property="Header" Value="{Binding DataContext.SelectedMeasurementPointTemplate.FullName, Converter={StaticResource _prefixValueConverter}}" />
             <Setter Property="HeaderTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -39,22 +44,25 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-
-
-        <!-- Grouping Source -->
-        <CollectionViewSource x:Key="_cvs" Source="{Binding MeasurementPointTemplates}"></CollectionViewSource>
-
     </UserControl.Resources>
 
-    <Grid x:Name="LayoutRoot" Background="White" Margin="10">
+    <!-- Grid Definitions -->
+    <Grid Background="White" Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- DataTable bound to ListCollectionView _cvs-->
-        <DataGrid  ItemsSource="{Binding MeasurementPointGroups, Mode=OneWay}"
+        <!-- Quicksearch Bar -->
+        <StackPanel Grid.Row="0">
+            <TextBlock>Quicksearch:</TextBlock>
+            <TextBox Text="{Binding UserInputKeyword, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <Button>QUICK COPY DATASET</Button>
+        </StackPanel>
+
+        <!-- Measurement Point Overview -->
+        <DataGrid  ItemsSource="{Binding MeasurementPointCollectionView, Mode=OneWay}"
                    x:Name="_measurementPointTemplates"
                    AutoGenerateColumns="False"
                    AlternatingRowBackground="LightGray" 
@@ -62,31 +70,20 @@
                    VerticalScrollBarVisibility="Visible"
                    HorizontalScrollBarVisibility="Visible"
                    CanUserResizeColumns="False"
-                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
+                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True"
+                   Grid.Row="1">
 
+            <!-- Datagrid Grouping -->
             <DataGrid.GroupStyle>
                 <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
                     <GroupStyle.ContainerStyle>
                         <Style TargetType="{x:Type GroupItem}">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <!-- TODO: Integrate style template for Expander.Header or find other solution-->
-                                        <!-- <Expander IsExpanded="True" Background="DarkGray" Style="{DynamicResource StretchExpanderStyle}"> -->
                                         <Expander IsExpanded="True" Background="AliceBlue">
                                             <Expander.Header>
                                                 <DockPanel>
-                                                    <!-- FlowDirection="LeftToRight" -->
-                                                    <!-- HorizontalAlignment="{Binding  -->
-                                                    <!--      HorizontalAlignment, -->
-                                                    <!--          RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContentPresenter}}, -->
-                                                    <!--          Mode=OneWayToSource}" -->
-                                                    <!-- LastChildFill="True"> -->
                                                     <TextBlock Text="{Binding ItemCount, StringFormat={}[Total: {0}]}" FontStyle="Italic" FontSize="12"></TextBlock>
                                                     <TextBlock Text="{Binding Name, StringFormat={} {0}}"  FontStyle="Italic" FontSize="12"></TextBlock>
                                                 </DockPanel>
@@ -103,7 +100,6 @@
                 </GroupStyle>
             </DataGrid.GroupStyle>
 
-
             <!-- Passing SelectedItem of DataGrid as a command parameter to the SelectedTemplateCommand-->
             <interactivity:Interaction.Triggers>
                 <interactivity:EventTrigger EventName="SelectionChanged">
@@ -111,16 +107,15 @@
                 </interactivity:EventTrigger>
             </interactivity:Interaction.Triggers>
 
-
-
+            <!-- DataGrid.Column -->
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding FullName}" Header="Name" FontWeight="Bold"></DataGridTextColumn>
-                <!-- <DataGridTextColumn Binding="{Binding Commentary}" Header="Commentary"></DataGridTextColumn> -->
             </DataGrid.Columns>
 
         </DataGrid>
 
-        <TabControl Grid.Row="1" 
+        <!-- TabControl for each selected Item -->
+        <TabControl Grid.Row="2" 
                     prism:RegionManager.RegionName="MeasurementPointDetailsRegion" 
                     />
 

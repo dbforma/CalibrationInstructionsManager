@@ -102,13 +102,10 @@
   <ItemGroup>
     <Compile Include="Behaviors\ResponsivenessBehavior.cs" />
     <Compile Include="Behaviors\SetMinWidthToAutoAttachedBehavior.cs" />
-    <Compile Include="Business\IRepository.cs" />
-    <Compile Include="Business\Repository.cs" />
     <Compile Include="Commands\ApplicationCommands.cs" />
     <Compile Include="Commands\IApplicationCommands.cs" />
     <Compile Include="Controls\CloseTabAction.cs" />
-    <Compile Include="Converters\BoolToVisibilityConverter.cs" />
-    <Compile Include="Converters\OffsetDoubleConverter.cs" />
+    <Compile Include="Converters\PrefixValueConverter.cs" />
     <Compile Include="Data\IPostgreSQLDatabase.cs" />
     <Compile Include="Data\PostgreSQLDatabase.cs" />
     <Compile Include="Dialogs\IDialogServiceExtensions.cs" />
@@ -118,14 +115,14 @@
     </Compile>
     <Compile Include="Events\MessageSentEvent.cs" />
     <Compile Include="Events\PassSelectedItemEvent.cs" />
-    <Compile Include="Models\IMeasurementPoint.cs" />
-    <Compile Include="Models\MeasurementPoint.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\Templates\ChannelSettingTemplate.cs" />
     <Compile Include="Models\Templates\DefaultConfigurationTemplate.cs" />
     <Compile Include="Models\Templates\IChannelSettingTemplate.cs" />
     <Compile Include="Models\Templates\IDefaultConfigurationTemplate.cs" />
     <Compile Include="Models\Templates\IMeasurementPointTemplate.cs" />
     <Compile Include="Models\Templates\MeasurementPointTemplate.cs" />
+    <Compile Include="Models\ValueTypes\ChannelSettingParameters.cs" />
     <Compile Include="Models\ValueTypes\DefaultConfigurationValueType.cs" />
     <Compile Include="Models\ValueTypes\MeasurementPointValueType.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -173,8 +170,6 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\DataTypes\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

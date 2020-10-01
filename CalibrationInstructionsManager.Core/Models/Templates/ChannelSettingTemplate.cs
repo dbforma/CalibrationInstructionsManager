@@ -10,13 +10,9 @@ namespace CalibrationInstructionsManager.Core.Models.Templates
 
         private int _id;
         private string _fullName;
-        private string _commentary;
-        // private DefaultConfigurationType _defaultConfigurationType;
 
         public int Id { get { return _id; } set { _id = value; OnPropertyChanged(); } }
         public string FullName { get { return _fullName; } set { _fullName = value; OnPropertyChanged(); } }
-        public string Commentary { get { return _commentary; } set { _commentary = value; OnPropertyChanged(); } }
-        // public DefaultConfigurationType DefaultConfigurationType { get { return _defaultConfigurationType; } set { _defaultConfigurationType = value; OnPropertyChanged(); } }
 
         #endregion // Properties
 
@@ -35,7 +31,7 @@ namespace CalibrationInstructionsManager.Core.Models.Templates
 
         public override string ToString()
         {
-            return String.Format($"{Id} {FullName} {Commentary}");
+            return String.Format($"{Id} {FullName}");
         }
 
         #endregion // Methods

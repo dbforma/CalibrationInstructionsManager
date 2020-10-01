@@ -2,65 +2,41 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MeasurementPoints.Module.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
              prism:ViewModelLocator.AutoWireViewModel="True">
+    <!-- Resources -->
     <UserControl.Resources>
         <Style TargetType="TabItem">
-            <Setter Property="Header" Value="{Binding DataContext.SelectedValuesAndTypes.TemplateId}" />
+            <Setter Property="Header" Value="{Binding DataContext.ObservableSelectedParameters.TemplateId}" />
         </Style>
     </UserControl.Resources>
-
-
-
-    <Grid x:Name="LayoutRoot">
+    
+    <Grid>
+        <!-- Grid Definition -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
-
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-
         </Grid.RowDefinitions>
 
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding SelectedValuesAndTypes}" 
-                  SelectionUnit="Cell"
+        <!-- SelectionUnit="Cell" -->
+        <!-- Selected Parameters -->
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ObservableSelectedParameters}" 
                   CanUserAddRows="True"
                   behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Description" >
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ValueDescription}"></TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Value">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding DefaultValue}"></TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Parameter">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding ParameterName}"></TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-
+                <DataGridTextColumn Header="Value" Binding="{Binding DefaultValue}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Description" Binding="{Binding ValueDescription}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Parameter" Binding="{Binding ParameterName}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

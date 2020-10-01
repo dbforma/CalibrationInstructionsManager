@@ -3,25 +3,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
-using CalibrationInstructionsManager.Core.Models;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.ValueTypes;
 using Prism.Regions;
-using System.Globalization;
 
 namespace MeasurementPoints.Module.ViewModels
 {
-    public class MeasurementPointsDetailViewModel : ViewModelBase, INavigationAware
+    public class MeasurementPointsDetailViewModel : ViewModelBase
     {
         #region Properties
-        private MeasurementPointTemplate _selectedMeasurementPointTemplate;
-        public MeasurementPointTemplate SelectedMeasurementPointTemplate { get { return _selectedMeasurementPointTemplate; } set { SetProperty(ref _selectedMeasurementPointTemplate, value); } }
+        private IMeasurementPointTemplate _selectedMeasurementPointTemplate;
+        public IMeasurementPointTemplate SelectedMeasurementPointTemplate { get { return _selectedMeasurementPointTemplate; } set { SetProperty(ref _selectedMeasurementPointTemplate, value); } }
 
-        private ObservableCollection<MeasurementPointValueType> _selectedValuesAndTypes;
-        public ObservableCollection<MeasurementPointValueType> SelectedValuesAndTypes { get { return _selectedValuesAndTypes; } set { SetProperty(ref _selectedValuesAndTypes, value); } }
+        private ObservableCollection<MeasurementPointValueType> _observableSelectedParameters;
+        public ObservableCollection<MeasurementPointValueType> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<MeasurementPointValueType> _observableValuesAndTypes;
-        public ObservableCollection<MeasurementPointValueType> ObservableValuesAndTypes { get { return _observableValuesAndTypes; } set { SetProperty(ref _observableValuesAndTypes, value); } }
+        private ObservableCollection<MeasurementPointValueType> _observableParameterCollection;
+        public ObservableCollection<MeasurementPointValueType> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
         private IPostgreSQLDatabase _database;
 
@@ -30,8 +28,8 @@ namespace MeasurementPoints.Module.ViewModels
         public MeasurementPointsDetailViewModel(IPostgreSQLDatabase database)
         {
             _database = database;
-            ObservableValuesAndTypes = new ObservableCollection<MeasurementPointValueType>();
-            SelectedValuesAndTypes = new ObservableCollection<MeasurementPointValueType>();
+            ObservableParameterCollection = new ObservableCollection<MeasurementPointValueType>();
+            ObservableSelectedParameters = new ObservableCollection<MeasurementPointValueType>();
             GetValuesAndTypesFromDatabase();
         }
 
@@ -39,23 +37,24 @@ namespace MeasurementPoints.Module.ViewModels
 
         public ObservableCollection<MeasurementPointValueType> GetValuesAndTypesFromDatabase()
         {
-            ObservableValuesAndTypes.Clear();
+            ObservableParameterCollection.Clear();
 
             foreach (var item in _database.GetMeasurementPointValueTypeParameters().ToList())
             {
-                ObservableValuesAndTypes.Add(item);
+                ObservableParameterCollection.Add(item);
             }
 
-            return ObservableValuesAndTypes;
+            return ObservableParameterCollection;
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
             {
+                //TODO: Handle InvalidCastException in a more proper manner
                 try
                 {
-                    SelectedMeasurementPointTemplate = navigationContext.Parameters.GetValue<MeasurementPointTemplate>("selectedTemplate");
+                    SelectedMeasurementPointTemplate = navigationContext.Parameters.GetValue<IMeasurementPointTemplate>("selectedTemplate");
                 }
                 catch (Exception e)
                 {
@@ -64,19 +63,19 @@ namespace MeasurementPoints.Module.ViewModels
                 }
                 
 
-                SelectedValuesAndTypes.Clear();
+                ObservableSelectedParameters.Clear();
 
-                for (int i = 0; i < ObservableValuesAndTypes.Count; i++)
+                for (int i = 0; i < ObservableParameterCollection.Count; i++)
                 {
-                    if (SelectedMeasurementPointTemplate.Id == ObservableValuesAndTypes[i].TemplateId)
+                    if (SelectedMeasurementPointTemplate.Id == ObservableParameterCollection[i].TemplateId)
                     {
-                        SelectedValuesAndTypes.Add(ObservableValuesAndTypes[i]);
+                        ObservableSelectedParameters.Add(ObservableParameterCollection[i]);
                     }
                 }
 
             }
 
-            var measurementPoint = navigationContext.Parameters["selectedTemplate"] as MeasurementPointTemplate;
+            var measurementPoint = navigationContext.Parameters["selectedTemplate"] as IMeasurementPointTemplate;
 
             if (measurementPoint != null)
             {
@@ -84,25 +83,23 @@ namespace MeasurementPoints.Module.ViewModels
             }
         }
 
-        public bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
-            var measurementPoint = navigationContext.Parameters["selectedTemplate"] as MeasurementPointTemplate;
+            var measurementPoint = navigationContext.Parameters["selectedTemplate"] as IMeasurementPointTemplate;
 
             if (measurementPoint != null)
             {
-                // Create new instance if FullName does not match
-                return SelectedMeasurementPointTemplate != null && SelectedMeasurementPointTemplate.FullName.ToLower() == measurementPoint.FullName.ToLower();
+                // Create new instance if Id does not match and parameter is not null
+                return SelectedMeasurementPointTemplate != null && SelectedMeasurementPointTemplate.Id == measurementPoint.Id;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
+            
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             base.OnNavigatedFrom(navigationContext);
-
         }
 
         #endregion // Methods

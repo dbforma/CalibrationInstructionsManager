@@ -2,13 +2,12 @@
 
 namespace CalibrationInstructionsManager.Core.Models.Templates
 {
-    public interface IChannelSettingTemplate
+    public interface IChannelSettingTemplate : INotifyPropertyChanged
     {
         #region Properties
 
         int Id { get; set; }
         string FullName { get; set; }
-        string Commentary { get; set; }
 
         #endregion // Properties
 

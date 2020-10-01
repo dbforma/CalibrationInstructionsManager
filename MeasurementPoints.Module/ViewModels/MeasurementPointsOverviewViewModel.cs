@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
-using CalibrationInstructionsManager.Core.Business;
 using CalibrationInstructionsManager.Core.Data;
-using CalibrationInstructionsManager.Core.Models;
 using CalibrationInstructionsManager.Core.Models.Templates;
+using CalibrationInstructionsManager.Core.Extensions;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -16,18 +15,35 @@ namespace MeasurementPoints.Module.ViewModels
     public class MeasurementPointsOverviewViewModel : ViewModelBase, INavigationAware
     {
         #region Properties & Commands
-
-        private ObservableCollection<MeasurementPointTemplate> _measurementPointTemplates;
-
-        public ObservableCollection<MeasurementPointTemplate> MeasurementPointTemplates { get { return _measurementPointTemplates; } set { SetProperty(ref _measurementPointTemplates, value); } }
-
-        public DelegateCommand<object> SelectedTemplateCommand { get; set; }
-
         private IRegionManager _regionManager;
         private IPostgreSQLDatabase _database;
 
-        private ListCollectionView _measurementPointGroups;
-        public ListCollectionView MeasurementPointGroups { get { return _measurementPointGroups; } set { SetProperty(ref _measurementPointGroups, value); } }
+        private ObservableCollection<IMeasurementPointTemplate> _measurementPointTemplates;
+        public ObservableCollection<IMeasurementPointTemplate> MeasurementPointTemplates { get { return _measurementPointTemplates; } set { SetProperty(ref _measurementPointTemplates, value); } }
+
+        private ICollectionView _measurementPointCollectionView;
+        public ICollectionView MeasurementPointCollectionView { get { return _measurementPointCollectionView; } set { SetProperty(ref _measurementPointCollectionView, value); } }
+
+        public DelegateCommand<object> SelectedTemplateCommand { get; set; }
+
+        /// <summary>
+        /// Filter logic for search bar
+        /// </summary>
+        /// <param name="defaultConfiguration"></param>
+        /// <returns></returns>
+        private string _userInputKeyword = string.Empty;
+        public string UserInputKeyword { get { return _userInputKeyword; } set { SetProperty(ref _userInputKeyword, value); MeasurementPointCollectionView.Filter += Filter; } }
+
+        private bool Filter(object measurementPoint)
+        {
+            IMeasurementPointTemplate measurementPointTemplate = measurementPoint as IMeasurementPointTemplate;
+
+            if (!string.IsNullOrEmpty(UserInputKeyword))
+            {
+                return measurementPointTemplate.FullName.Contains(UserInputKeyword, StringComparison.OrdinalIgnoreCase) || measurementPointTemplate.Commentary.Contains(UserInputKeyword, StringComparison.OrdinalIgnoreCase);
+            }
+            return true;
+        }
 
         #endregion // Properties & Commands
 
@@ -37,7 +53,7 @@ namespace MeasurementPoints.Module.ViewModels
             _regionManager = regionManager;
             
             SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
-            MeasurementPointTemplates = new ObservableCollection<MeasurementPointTemplate>(database.GetMeasurementPointTemplates().ToList());
+            MeasurementPointTemplates = new ObservableCollection<IMeasurementPointTemplate>(database.GetMeasurementPointTemplates().ToList());
         }
 
         #region Methods
@@ -55,12 +71,12 @@ namespace MeasurementPoints.Module.ViewModels
                 return;
             }
 
-
             var parameters = new NavigationParameters();
             parameters.Add("selectedTemplate", selectedTemplate);
 
             if (selectedTemplate != null)
             {
+                //TODO: Handle InvalidCastException in a more proper manner
                 try
                 {
                     _regionManager.RequestNavigate("MeasurementPointDetailsRegion", "MeasurementPointsDetailView",
@@ -74,8 +90,7 @@ namespace MeasurementPoints.Module.ViewModels
                 
             }
         }
-
-
+        
         /// <summary>
         /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
         /// </summary>
@@ -86,7 +101,7 @@ namespace MeasurementPoints.Module.ViewModels
             GroupByCommentary();
         }
 
-        public ObservableCollection<MeasurementPointTemplate> GetTemplatesFromDatabase()
+        public ObservableCollection<IMeasurementPointTemplate> GetTemplatesFromDatabase()
         {
             MeasurementPointTemplates.Clear();
 
@@ -105,12 +120,12 @@ namespace MeasurementPoints.Module.ViewModels
 
         public void GroupByCommentary()
         {
-            MeasurementPointGroups = new ListCollectionView(MeasurementPointTemplates);
+            MeasurementPointCollectionView = CollectionViewSource.GetDefaultView(MeasurementPointTemplates);
             var groupDescription = new PropertyGroupDescription("Commentary");
 
-            MeasurementPointGroups.GroupDescriptions.Clear();
+            MeasurementPointCollectionView.GroupDescriptions.Clear();
 
-            MeasurementPointGroups.GroupDescriptions.Add(groupDescription);
+            MeasurementPointCollectionView.GroupDescriptions.Add(groupDescription);
         }
 
         #endregion // Methods

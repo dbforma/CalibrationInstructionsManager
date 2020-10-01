@@ -17,7 +17,6 @@ namespace CalibrationInstructionsManager.Core.Behaviors
         }
 
         // Using a DependencyProperty as the backing store for SetMinWidthToAuto.
-        // This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SetMinWidthToAutoProperty =
             DependencyProperty.RegisterAttached("SetMinWidthToAuto", typeof(bool), typeof(SetMinWidthToAutoAttachedBehavior), new UIPropertyMetadata(false, WireUpLoadedEvent));
 
@@ -40,7 +39,7 @@ namespace CalibrationInstructionsManager.Core.Behaviors
             foreach (var column in grid.Columns)
             {
                 column.MinWidth = column.ActualWidth;
-                column.Width = new DataGridLength(640, DataGridLengthUnitType.Pixel);
+                column.Width = new DataGridLength(438, DataGridLengthUnitType.Pixel);
             }
         }
     }

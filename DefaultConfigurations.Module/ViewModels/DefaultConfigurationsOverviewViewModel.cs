@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Templates;
+using CalibrationInstructionsManager.Core.Extensions;
 using Prism.Commands;
 using Prism.Regions;
 
 namespace DefaultConfigurations.Module.ViewModels
 {
-    public class DefaultConfigurationsOverviewViewModel : ViewModelBase, INavigationAware
+    public class DefaultConfigurationsOverviewViewModel : ViewModelBase
     {
         #region Properties & Commands
 
-        private ObservableCollection<DefaultConfigurationTemplate> _defaultConfigurationTemplates;
+        private ObservableCollection<IDefaultConfigurationTemplate> _defaultConfigurationTemplates;
 
-        public ObservableCollection<DefaultConfigurationTemplate> DefaultConfigurationTemplates { get { return _defaultConfigurationTemplates; } set { SetProperty(ref _defaultConfigurationTemplates, value); } }
+        public ObservableCollection<IDefaultConfigurationTemplate> DefaultConfigurationTemplates { get { return _defaultConfigurationTemplates; } set { SetProperty(ref _defaultConfigurationTemplates, value); } }
 
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
 
         private IRegionManager _regionManager;
         private IPostgreSQLDatabase _database;
 
-        private ICollectionView _defaultConfigurationCollection;
-        public ICollectionView DefaultConfigurationCollection { get { return _defaultConfigurationCollection; } set { SetProperty(ref _defaultConfigurationCollection, value); } }
+        private ICollectionView _defaultConfigurationCollectionView;
+        public ICollectionView DefaultConfigurationCollectionView { get { return _defaultConfigurationCollectionView; } set { SetProperty(ref _defaultConfigurationCollectionView, value); } }
         
 
         /// <summary>
@@ -36,26 +33,19 @@ namespace DefaultConfigurations.Module.ViewModels
         /// </summary>
         /// <param name="defaultConfiguration"></param>
         /// <returns></returns>
-        private string _fullNameFilter = string.Empty;
-        public string FullNameFilter { get { return _fullNameFilter; } set { SetProperty(ref _fullNameFilter, value); DefaultConfigurationCollection.Filter += Filter; } }
+        private string _userInputKeyword = string.Empty;
+        public string UserInputKeyword { get { return _userInputKeyword; } set { SetProperty(ref _userInputKeyword, value); DefaultConfigurationCollectionView.Filter += Filter; } }
 
         private bool Filter(object defaultConfiguration)
-
         {
-            //TODO: Implement CultureIgnoreCase
-            DefaultConfigurationTemplate defaultConfigurationTemplate = defaultConfiguration as DefaultConfigurationTemplate;
-            if (!string.IsNullOrEmpty(FullNameFilter))
+            IDefaultConfigurationTemplate defaultConfigurationTemplate = defaultConfiguration as IDefaultConfigurationTemplate;
+
+            if (!string.IsNullOrEmpty(UserInputKeyword))
             {
-                return defaultConfigurationTemplate.FullName.Contains(FullNameFilter) ||
-                       defaultConfigurationTemplate.Commentary.Contains(FullNameFilter);
+                return defaultConfigurationTemplate.FullName.Contains(UserInputKeyword, StringComparison.OrdinalIgnoreCase) || defaultConfigurationTemplate.Commentary.Contains(UserInputKeyword, StringComparison.OrdinalIgnoreCase);
             }
-            else return true;
+            return true;
         }
-
-
-        //
-        // private ListCollectionView _defaultConfigurationCollection;
-        // public ListCollectionView DefaultConfigurationCollection { get { return _defaultConfigurationCollection; } set { SetProperty(ref _defaultConfigurationCollection, value); } }
 
         #endregion // Properties & Commands
 
@@ -65,7 +55,7 @@ namespace DefaultConfigurations.Module.ViewModels
             _regionManager = regionManager;
 
             SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
-            DefaultConfigurationTemplates = new ObservableCollection<DefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates());
+            DefaultConfigurationTemplates = new ObservableCollection<IDefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates());
         }
 
         #region Methods
@@ -89,31 +79,30 @@ namespace DefaultConfigurations.Module.ViewModels
 
             if (selectedTemplate != null)
             {
+                //TODO: Handle InvalidCastException in a more proper manner
                 try
                 {
-                    _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion",
-                        "DefaultConfigurationsDetailView",
-                        parameters);
+                    _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView", parameters);
                 }
-                catch
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     return;
                 }
             }
         }
 
-
         /// <summary>
         /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
         /// </summary>
         /// <param name="navigationContext"></param>
-        public new void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             GetTemplatesFromDatabase();
             GroupByCommentary();
         }
 
-        public ObservableCollection<DefaultConfigurationTemplate> GetTemplatesFromDatabase()
+        public ObservableCollection<IDefaultConfigurationTemplate> GetTemplatesFromDatabase()
         {
             DefaultConfigurationTemplates.Clear();
 
@@ -125,22 +114,24 @@ namespace DefaultConfigurations.Module.ViewModels
             return DefaultConfigurationTemplates;
         }
 
-        public new bool IsNavigationTarget(NavigationContext navigationContext)
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             return true;
         }
 
         public void GroupByCommentary()
         {
-            // DefaultConfigurationCollection = new ListCollectionView(DefaultConfigurationTemplates);
-            DefaultConfigurationCollection = CollectionViewSource.GetDefaultView(DefaultConfigurationTemplates);
+            DefaultConfigurationCollectionView = CollectionViewSource.GetDefaultView(DefaultConfigurationTemplates);
             var groupDescription = new PropertyGroupDescription("Commentary");
 
-            DefaultConfigurationCollection.GroupDescriptions.Clear();
+            DefaultConfigurationCollectionView.GroupDescriptions.Clear();
 
-            DefaultConfigurationCollection.GroupDescriptions.Add(groupDescription);
+            DefaultConfigurationCollectionView.GroupDescriptions.Add(groupDescription);
         }
 
         #endregion // Methods
     }
+
+    
+    
 }

@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
 namespace CalibrationInstructionsManager.Core.Converters
 {
-    public class BoolToVisibilityConverter : IValueConverter
+    public class PrefixValueConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var objectToBool = (bool)value;
+            var bindedString = value.ToString();
 
-            if (objectToBool)
+            // Don't convert if string is < 20
+            if (bindedString.Length < 20)
             {
-                return Visibility.Visible;
+                return bindedString;
             }
-            else
-            {
-                return Visibility.Hidden;
-            }
+            return bindedString.Substring(0, 20) + " ...";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }

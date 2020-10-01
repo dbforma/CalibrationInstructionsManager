@@ -7,8 +7,39 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              xmlns:prism="http://prismlibrary.com/"
+             xmlns:behaviors="clr-namespace:CalibrationInstructionsManager.Core.Behaviors;assembly=CalibrationInstructionsManager.Core"
              prism:ViewModelLocator.AutoWireViewModel="True">
+    <!-- Resources -->
+    <UserControl.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Header" Value="{Binding DataContext.ObservableSelectedParameters.TemplateId}" />
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-            
+        <!-- Grid Definitions -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True" -->
+        <!-- Selected Parameters -->
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ObservableSelectedParameters}" 
+                  CanUserAddRows="True"
+                  >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Index" Binding="{Binding ParameterIndex}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Default Value" Binding="{Binding DefaultValue}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Uncertainty" Binding="{Binding UncertaintyValue}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding ParameterQuantity}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Default Type" Binding="{Binding TypeName}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
