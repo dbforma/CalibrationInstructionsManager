@@ -1,4 +1,5 @@
 ﻿// Note: System.Threading.Tasks.Extensions must be <= 4.5.2
+// TODO: Seperate PostgreSQLDatabase into GetChannelSettingsCommand/ UpdateChannelSettingsCommands, GetMeasurementPointsCommand/ UpdateMeasurementPointsCommand and GetDefaultConfigurationsCommand/ UpdateDefaultConfigurationsCommand
 
 using System;
 using System.Collections.Generic;
@@ -133,9 +134,9 @@ namespace CalibrationInstructionsManager.Core.Data
         /// Queries the table kkonfigtyp and kkonfigliste to get corresponding attributes of each default configuration dataset
         /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
         /// </summary>
-        public LinkedList<DefaultConfigurationValueType> GetDefaultConfigurationValueTypeParameters()
+        public LinkedList<DefaultConfigurationParameters> GetDefaultConfigurationValueTypeParameters()
         {
-            var defaultConfigurationValueTypeCatalog = new LinkedList<DefaultConfigurationValueType>();
+            var defaultConfigurationValueTypeCatalog = new LinkedList<DefaultConfigurationParameters>();
             string queryStatement = @"  
                                         SELECT kl.idkkonfigliste AS templateId, kl.kkonfig_id AS parameterId, kl.kkonfigtyp_id, kl.wert AS parameterValue, kt.idkkonfigtyp AS typeId, kt.name AS typeName
                                         FROM kkonfigliste kl
@@ -165,7 +166,7 @@ namespace CalibrationInstructionsManager.Core.Data
                                 {
                                     while (dataReader.Read())
                                     {
-                                        var defaultConfigurationValueType = new DefaultConfigurationValueType();
+                                        var defaultConfigurationValueType = new DefaultConfigurationParameters();
 
                                         defaultConfigurationValueType.ParameterId = dataReader.GetInt32(indexParameterId);
                                         defaultConfigurationValueType.TemplateId = dataReader.GetInt32(indexTemplateId);
@@ -255,9 +256,9 @@ namespace CalibrationInstructionsManager.Core.Data
         /// Queries the table konfigliste, mkonfig, mkonfigtyp and mkonfigvalues to get corresponding attributes of each measurement point dataset
         /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
         /// </summary>
-        public LinkedList<MeasurementPointValueType> GetMeasurementPointValueTypeParameters()
+        public LinkedList<MeasurementPointParameters> GetMeasurementPointValueTypeParameters()
         {
-            var measurementPointTemplates = new LinkedList<MeasurementPointValueType>();
+            var measurementPointTemplates = new LinkedList<MeasurementPointParameters>();
             string queryStatement = @"  
                                         SELECT mk.idmkonfig AS templateId, kl.wert AS parameterDefaultValue, mkv.beschreibung AS valueDescription, mkt.name AS parameterName, mkt.idmkonfigtyp AS typeId
                                         FROM konfigliste kl
@@ -292,7 +293,7 @@ namespace CalibrationInstructionsManager.Core.Data
                                 {
                                     while (dataReader.Read())
                                     {
-                                        var measurementPointValueType = new MeasurementPointValueType();
+                                        var measurementPointValueType = new MeasurementPointParameters();
 
                                         measurementPointValueType.TemplateId = dataReader.GetInt32(indexTemplateId);
                                         measurementPointValueType.TypeId = dataReader.GetInt32(indexTypeId);

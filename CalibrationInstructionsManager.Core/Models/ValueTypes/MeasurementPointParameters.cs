@@ -1,6 +1,6 @@
 ﻿namespace CalibrationInstructionsManager.Core.Models.ValueTypes
 {
-    public class MeasurementPointValueType 
+    public class MeasurementPointParameters 
     {
         private int _templateId;
         private int _typeId;

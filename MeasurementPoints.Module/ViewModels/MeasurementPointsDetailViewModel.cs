@@ -15,11 +15,11 @@ namespace MeasurementPoints.Module.ViewModels
         private IMeasurementPointTemplate _selectedMeasurementPointTemplate;
         public IMeasurementPointTemplate SelectedMeasurementPointTemplate { get { return _selectedMeasurementPointTemplate; } set { SetProperty(ref _selectedMeasurementPointTemplate, value); } }
 
-        private ObservableCollection<MeasurementPointValueType> _observableSelectedParameters;
-        public ObservableCollection<MeasurementPointValueType> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
+        private ObservableCollection<MeasurementPointParameters> _observableSelectedParameters;
+        public ObservableCollection<MeasurementPointParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<MeasurementPointValueType> _observableParameterCollection;
-        public ObservableCollection<MeasurementPointValueType> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
+        private ObservableCollection<MeasurementPointParameters> _observableParameterCollection;
+        public ObservableCollection<MeasurementPointParameters> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
         private IPostgreSQLDatabase _database;
 
@@ -28,14 +28,14 @@ namespace MeasurementPoints.Module.ViewModels
         public MeasurementPointsDetailViewModel(IPostgreSQLDatabase database)
         {
             _database = database;
-            ObservableParameterCollection = new ObservableCollection<MeasurementPointValueType>();
-            ObservableSelectedParameters = new ObservableCollection<MeasurementPointValueType>();
+            ObservableParameterCollection = new ObservableCollection<MeasurementPointParameters>();
+            ObservableSelectedParameters = new ObservableCollection<MeasurementPointParameters>();
             GetValuesAndTypesFromDatabase();
         }
 
         #region Methods
 
-        public ObservableCollection<MeasurementPointValueType> GetValuesAndTypesFromDatabase()
+        public ObservableCollection<MeasurementPointParameters> GetValuesAndTypesFromDatabase()
         {
             ObservableParameterCollection.Clear();
 

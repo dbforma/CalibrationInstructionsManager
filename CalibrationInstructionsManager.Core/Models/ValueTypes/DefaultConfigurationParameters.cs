@@ -1,6 +1,6 @@
 ﻿namespace CalibrationInstructionsManager.Core.Models.ValueTypes
 {
-    public class DefaultConfigurationValueType 
+    public class DefaultConfigurationParameters 
     {
         private int _parameterId;
         private int _templateId;

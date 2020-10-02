@@ -87,12 +87,17 @@ namespace CalibrationInstructionsManager.Login.ViewModels
             // applicationCommands.EnableButtonCommand.RegisterCommand(PassLoginDataCommand);
         }
 
+        public void Navigate()
+        {
+            _regionManager.RequestNavigate("NavigationRegion", "DefaultConfigurationsOverviewView");
+        }
+
         public void PassLoginDataToRepository()
         {
             _repository.SetDatabaseLoginData(Host, Port, Username, Password, Database);
             if (_repository.IsConnectionEstablished())
             {
-                _regionManager.RequestNavigate("NavigationRegion", "DefaultConfigurationsOverviewView");
+                Navigate();
             }
         }
 

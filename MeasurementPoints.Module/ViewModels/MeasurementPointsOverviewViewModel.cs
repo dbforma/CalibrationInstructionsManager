@@ -1,7 +1,9 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
@@ -17,6 +19,8 @@ namespace MeasurementPoints.Module.ViewModels
         #region Properties & Commands
         private IRegionManager _regionManager;
         private IPostgreSQLDatabase _database;
+        private NavigationParameters _navigationParameter;
+        private SelectionChangedEventArgs _selectionChangedEvent;
 
         private ObservableCollection<IMeasurementPointTemplate> _measurementPointTemplates;
         public ObservableCollection<IMeasurementPointTemplate> MeasurementPointTemplates { get { return _measurementPointTemplates; } set { SetProperty(ref _measurementPointTemplates, value); } }
@@ -29,7 +33,7 @@ namespace MeasurementPoints.Module.ViewModels
         /// <summary>
         /// Filter logic for search bar
         /// </summary>
-        /// <param name="defaultConfiguration"></param>
+        /// <_navigationParameter name="defaultConfiguration"></_navigationParameter>
         /// <returns></returns>
         private string _userInputKeyword = string.Empty;
         public string UserInputKeyword { get { return _userInputKeyword; } set { SetProperty(ref _userInputKeyword, value); MeasurementPointCollectionView.Filter += Filter; } }
@@ -52,49 +56,61 @@ namespace MeasurementPoints.Module.ViewModels
             _database = database;
             _regionManager = regionManager;
             
-            SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
+            SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
             MeasurementPointTemplates = new ObservableCollection<IMeasurementPointTemplate>(database.GetMeasurementPointTemplates().ToList());
         }
 
         #region Methods
 
-        /// <summary>
-        /// Sending parameter "selectedTemplate" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
-        /// </summary>
-        /// <param name="selectedTemplate"></param>
-        private void TemplateSelected(object selectedTemplate)
+        private void checkSelectedItem(object selectedItem)
         {
-            // If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of DefaultConfigurationTemplate and add it to the Observable Collection
-            if (selectedTemplate.ToString() == "{NewItemPlaceholder}")
+            // If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of MeasurementPointTemplate and add it to the Observable Collection
+            if (selectedItem.ToString() == "{NewItemPlaceholder}")
             {
                 _measurementPointTemplates.Add(new MeasurementPointTemplate());
-                return;
             }
 
-            var parameters = new NavigationParameters();
-            parameters.Add("selectedTemplate", selectedTemplate);
-
-            if (selectedTemplate != null)
+            // TODO: Implement logic if selectedItem is typeof SelectionChangedEventArgs
+            if (selectedItem.GetType() == typeof(SelectionChangedEventArgs))
             {
-                //TODO: Handle InvalidCastException in a more proper manner
-                try
-                {
-                    _regionManager.RequestNavigate("MeasurementPointDetailsRegion", "MeasurementPointsDetailView",
-                        parameters);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return;
-                }
-                
+                _selectionChangedEvent = (SelectionChangedEventArgs)selectedItem;
+                // BEGIN TEST
+                var test = (MeasurementPointTemplate)_selectionChangedEvent.RemovedItems[0]; 
+                Console.WriteLine(test.FullName);
+                // END TEST
+            }
+
+            if (selectedItem.GetType() == typeof(MeasurementPointTemplate))
+            {
+                _navigationParameter = new NavigationParameters();
+                _navigationParameter.Add("selectedTemplate", selectedItem);
+                Navigate();
+            }
+        }
+
+
+        /// <summary>
+        /// Sending parameter "selectedItem" to target-view "MeasurementPointsDetailView" and navigate to "MeasurementPointDetailsRegion" region
+        /// </summary>
+        /// <_navigationParameter name="selectedTemplate"></_navigationParameter>
+        private void Navigate()
+        {
+            try
+            {
+                _regionManager.RequestNavigate("MeasurementPointDetailsRegion", "MeasurementPointsDetailView",
+                    _navigationParameter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
         
         /// <summary>
         /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
         /// </summary>
-        /// <param name="navigationContext"></param>
+        /// <_navigationParameter name="navigationContext"></_navigationParameter>
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             GetTemplatesFromDatabase();

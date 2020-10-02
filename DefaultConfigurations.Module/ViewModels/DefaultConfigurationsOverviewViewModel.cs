@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Controls;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
@@ -16,22 +17,21 @@ namespace DefaultConfigurations.Module.ViewModels
         #region Properties & Commands
 
         private ObservableCollection<IDefaultConfigurationTemplate> _defaultConfigurationTemplates;
-
         public ObservableCollection<IDefaultConfigurationTemplate> DefaultConfigurationTemplates { get { return _defaultConfigurationTemplates; } set { SetProperty(ref _defaultConfigurationTemplates, value); } }
-
-        public DelegateCommand<object> SelectedTemplateCommand { get; set; }
-
-        private IRegionManager _regionManager;
-        private IPostgreSQLDatabase _database;
 
         private ICollectionView _defaultConfigurationCollectionView;
         public ICollectionView DefaultConfigurationCollectionView { get { return _defaultConfigurationCollectionView; } set { SetProperty(ref _defaultConfigurationCollectionView, value); } }
-        
+
+        private IRegionManager _regionManager;
+        private IPostgreSQLDatabase _database;
+        private NavigationParameters _navigationParameter;
+        private SelectionChangedEventArgs _selectionChangedEvent;
+        public DelegateCommand<object> SelectedTemplateCommand { get; set; }
 
         /// <summary>
         /// Filter logic for search bar
         /// </summary>
-        /// <param name="defaultConfiguration"></param>
+        /// <_navigationParameter name="defaultConfiguration"></_navigationParameter>
         /// <returns></returns>
         private string _userInputKeyword = string.Empty;
         public string UserInputKeyword { get { return _userInputKeyword; } set { SetProperty(ref _userInputKeyword, value); DefaultConfigurationCollectionView.Filter += Filter; } }
@@ -54,48 +54,61 @@ namespace DefaultConfigurations.Module.ViewModels
             _database = database;
             _regionManager = regionManager;
 
-            SelectedTemplateCommand = new DelegateCommand<object>(TemplateSelected);
+            SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
             DefaultConfigurationTemplates = new ObservableCollection<IDefaultConfigurationTemplate>(database.GetDefaultConfigurationTemplates());
         }
 
         #region Methods
 
-        /// <summary>
-        /// Sending parameter "selectedTemplate" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
-        /// </summary>
-        /// <param name="selectedTemplate"></param>
-        private void TemplateSelected(object selectedTemplate)
+        
+        private void checkSelectedItem(object selectedItem)
         {
             // If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of DefaultConfigurationTemplate and add it to the Observable Collection
-            if (selectedTemplate.ToString() == "{NewItemPlaceholder}")
+            if (selectedItem.ToString() == "{NewItemPlaceholder}")
             {
                 _defaultConfigurationTemplates.Add(new DefaultConfigurationTemplate());
-                return;
             }
 
-
-            var parameters = new NavigationParameters();
-            parameters.Add("selectedTemplate", selectedTemplate);
-
-            if (selectedTemplate != null)
+            // TODO: Implement logic if selectedItem is typeof SelectionChangedEventArgs
+            if (selectedItem.GetType() == typeof(SelectionChangedEventArgs))
             {
-                //TODO: Handle InvalidCastException in a more proper manner
-                try
-                {
-                    _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView", parameters);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    return;
-                }
+                _selectionChangedEvent = (SelectionChangedEventArgs)selectedItem;
+                // BEGIN TEST
+                var test = (DefaultConfigurationTemplate)_selectionChangedEvent.RemovedItems[0];
+                Console.WriteLine(test.FullName);
+                // END TEST
+            }
+
+            if (selectedItem.GetType() == typeof(DefaultConfigurationTemplate))
+            {
+                _navigationParameter = new NavigationParameters();
+                _navigationParameter.Add("selectedTemplate", selectedItem);
+                Navigate();
+            }
+        }
+
+        /// <summary>
+        /// Sending parameter "selectedItem" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
+        /// </summary>
+        /// <_navigationParameter name="selectedTemplate"></_navigationParameter>
+        private void Navigate()
+        {
+            try
+            {
+                _regionManager.RequestNavigate("DefaultConfigurationDetailsRegion", "DefaultConfigurationsDetailView",
+                    _navigationParameter);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
         /// <summary>
         /// Here is the logic defined what should happen if the regionManager navigates to ViewModel/ View
         /// </summary>
-        /// <param name="navigationContext"></param>
+        /// <_navigationParameter name="navigationContext"></_navigationParameter>
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             GetTemplatesFromDatabase();

@@ -10,9 +10,9 @@ namespace CalibrationInstructionsManager.Core.Data
         void SetDatabaseLoginData(string host, string port, string username, string password, string database);
         bool IsConnectionEstablished();
         LinkedList<Models.Templates.DefaultConfigurationTemplate> GetDefaultConfigurationTemplates();
-        LinkedList<DefaultConfigurationValueType> GetDefaultConfigurationValueTypeParameters();
+        LinkedList<DefaultConfigurationParameters> GetDefaultConfigurationValueTypeParameters();
         LinkedList<MeasurementPointTemplate> GetMeasurementPointTemplates();
-        LinkedList<MeasurementPointValueType> GetMeasurementPointValueTypeParameters();
+        LinkedList<MeasurementPointParameters> GetMeasurementPointValueTypeParameters();
         LinkedList<ChannelSettingTemplate> GetChannelSettingTemplates();
         LinkedList<ChannelSettingParameters> GetChannelSettingParameters();
     }

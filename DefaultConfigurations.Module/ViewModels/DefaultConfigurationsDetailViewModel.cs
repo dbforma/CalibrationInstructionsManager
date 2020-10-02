@@ -15,11 +15,11 @@ namespace DefaultConfigurations.Module.ViewModels
         private IDefaultConfigurationTemplate _selectedDefaultConfigurationTemplate;
         public IDefaultConfigurationTemplate SelectedDefaultConfigurationTemplate { get { return _selectedDefaultConfigurationTemplate; } set { SetProperty(ref _selectedDefaultConfigurationTemplate, value); } }
 
-        private ObservableCollection<DefaultConfigurationValueType> _observableSelectedParameters;
-        public ObservableCollection<DefaultConfigurationValueType> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
+        private ObservableCollection<DefaultConfigurationParameters> _observableSelectedParameters;
+        public ObservableCollection<DefaultConfigurationParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<DefaultConfigurationValueType> _observableParameterCollection;
-        public ObservableCollection<DefaultConfigurationValueType> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
+        private ObservableCollection<DefaultConfigurationParameters> _observableParameterCollection;
+        public ObservableCollection<DefaultConfigurationParameters> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
         private IPostgreSQLDatabase _database;
 
@@ -28,14 +28,14 @@ namespace DefaultConfigurations.Module.ViewModels
         public DefaultConfigurationsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
          {
             _database = database;
-            ObservableParameterCollection = new ObservableCollection<DefaultConfigurationValueType>();
-            ObservableSelectedParameters = new ObservableCollection<DefaultConfigurationValueType>();
+            ObservableParameterCollection = new ObservableCollection<DefaultConfigurationParameters>();
+            ObservableSelectedParameters = new ObservableCollection<DefaultConfigurationParameters>();
             GetValuesAndTypesFromDatabase();
          }
 
         #region Methods
 
-        public ObservableCollection<DefaultConfigurationValueType> GetValuesAndTypesFromDatabase()
+        public ObservableCollection<DefaultConfigurationParameters> GetValuesAndTypesFromDatabase()
         {
             ObservableParameterCollection.Clear();
 
