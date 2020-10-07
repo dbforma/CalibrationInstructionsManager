@@ -3,8 +3,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
+using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
-using CalibrationInstructionsManager.Core.Models.ValueTypes;
 using Prism.Regions;
 
 namespace MeasurementPoints.Module.ViewModels

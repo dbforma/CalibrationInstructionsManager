@@ -1,4 +1,4 @@
-﻿namespace CalibrationInstructionsManager.Core.Models.ValueTypes
+﻿namespace CalibrationInstructionsManager.Core.Models.Parameters
 {
     public class DefaultConfigurationParameters 
     {

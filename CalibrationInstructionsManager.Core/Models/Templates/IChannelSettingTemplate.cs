@@ -6,7 +6,7 @@ namespace CalibrationInstructionsManager.Core.Models.Templates
     {
         #region Properties
 
-        int Id { get; set; }
+        int? Id { get; set; }
         string FullName { get; set; }
 
         #endregion // Properties

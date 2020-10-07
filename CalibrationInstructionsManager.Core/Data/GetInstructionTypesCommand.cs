@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Data;
+using CalibrationInstructionsManager.Core.Models.Types;
+using Npgsql;
 
 namespace CalibrationInstructionsManager.Core.Data
 {
@@ -9,7 +12,5 @@ namespace CalibrationInstructionsManager.Core.Data
         {
             _database = database;
         }
-
-        public LinkedList<string> GetMeasurementPointTypes;
     }
 }

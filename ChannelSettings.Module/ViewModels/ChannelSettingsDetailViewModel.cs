@@ -1,10 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows.Data;
+using System.Windows.Documents;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
+using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
-using CalibrationInstructionsManager.Core.Models.ValueTypes;
+using CalibrationInstructionsManager.Core.Models.Types;
+using Prism.Commands;
 using Prism.Regions;
 
 namespace ChannelSettings.Module.ViewModels
@@ -19,9 +25,13 @@ namespace ChannelSettings.Module.ViewModels
         public ObservableCollection<ChannelSettingParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
         private ObservableCollection<ChannelSettingParameters> _observableParameterCollection;
-        public ObservableCollection<ChannelSettingParameters> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
+        private ObservableCollection<ChannelSettingParameters> ObservableParameterCollection { get; }
 
         private IPostgreSQLDatabase _database;
+
+        // private ObservableCollection<IChannelSettingType> _observableTypeCollection;
+        // public ObservableCollection<IChannelSettingType> ObservableTypeCollection { get { return _observableTypeCollection; } set { SetProperty(ref _observableTypeCollection, value); } }
+
 
         #endregion // Properties
 
@@ -31,7 +41,10 @@ namespace ChannelSettings.Module.ViewModels
             ObservableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
             ObservableSelectedParameters = new ObservableCollection<ChannelSettingParameters>();
             GetParametersFromDatabase();
+            // ObservableTypeCollection = new ObservableCollection<IChannelSettingType>();
+            // GetTypesFromDatabase();
         }
+
 
         #region Methods
 
@@ -39,12 +52,24 @@ namespace ChannelSettings.Module.ViewModels
         {
             ObservableParameterCollection.Clear();
 
-            foreach (var item in _database.GetChannelSettingParameters().ToList())
+            foreach (var item in _database.GetChannelSettingParameters())
             {
                 ObservableParameterCollection.Add(item);
             }
             return ObservableParameterCollection;
         }
+
+        // public ObservableCollection<IChannelSettingType> GetTypesFromDatabase()
+        // {
+        //     ObservableTypeCollection.Clear();
+        //
+        //     foreach (var item in _database.GetChannelSettingTypes())
+        //     {
+        //         ObservableTypeCollection.Add(item);
+        //     }
+        //
+        //     return ObservableTypeCollection;
+        // }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -60,8 +85,7 @@ namespace ChannelSettings.Module.ViewModels
                     Console.WriteLine(e);
                     return;
                 }
-
-
+                
                 ObservableSelectedParameters.Clear();
 
                 for (int i = 0; i < ObservableParameterCollection.Count; i++)
@@ -72,6 +96,7 @@ namespace ChannelSettings.Module.ViewModels
                     }
                 }
 
+                CopyParametersOfSelectedItem();
             }
 
             var channelSetting = navigationContext.Parameters["selectedTemplate"] as IChannelSettingTemplate;
@@ -79,6 +104,15 @@ namespace ChannelSettings.Module.ViewModels
             if (channelSetting != null)
             {
                 SelectedChannelSettingTemplate = channelSetting;
+            }
+        }
+
+        public void CopyParametersOfSelectedItem()
+        {
+
+            if (_database.GetChannelSettingTemplates().Any(a => a.FullName == SelectedChannelSettingTemplate.FullName ))
+            {
+                Console.WriteLine("juhu");
             }
         }
 

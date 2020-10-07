@@ -4,9 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
-using CalibrationInstructionsManager.Core.Models.ValueTypes;
+using CalibrationInstructionsManager.Core.Models.Types;
 using Npgsql;
+using NpgsqlTypes;
 
 namespace CalibrationInstructionsManager.Core.Data
 {
@@ -132,7 +134,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
         /// <summary>
         /// Queries the table kkonfigtyp and kkonfigliste to get corresponding attributes of each default configuration dataset
-        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Parameters
         /// </summary>
         public LinkedList<DefaultConfigurationParameters> GetDefaultConfigurationValueTypeParameters()
         {
@@ -254,7 +256,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
         /// <summary>
         /// Queries the table konfigliste, mkonfig, mkonfigtyp and mkonfigvalues to get corresponding attributes of each measurement point dataset
-        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Parameters
         /// </summary>
         public LinkedList<MeasurementPointParameters> GetMeasurementPointValueTypeParameters()
         {
@@ -385,8 +387,8 @@ namespace CalibrationInstructionsManager.Core.Data
         }
 
         /// <summary>
-        /// Queries the table XXX to get corresponding attributes of each channel setting dataset
-        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.ValueTypes
+        /// Queries the table mpunkt, kvorlage, vorgabetyp to get corresponding attributes of each channel setting dataset
+        /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Parameters
         /// </summary>
         public LinkedList<ChannelSettingParameters> GetChannelSettingParameters()
         {
@@ -470,5 +472,98 @@ namespace CalibrationInstructionsManager.Core.Data
             }
             return channelSettingParameterCatalog;
         }
+
+        public LinkedList<IChannelSettingType> GetChannelSettingTypes()
+        {
+            var channelSettingTypeCatalog = new LinkedList<IChannelSettingType>();
+            string queryStatement = @"
+                                        SELECT idvorgabetyp, name 
+                                        FROM vorgabetyp
+                                        ORDER BY idvorgabetyp";
+
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(queryStatement, connection))
+                        {
+                            connection.Open();
+                            using (NpgsqlDataReader dataReader = command.ExecuteReader())
+                            {
+
+                                var indexId = dataReader.GetOrdinal("idvorgabetyp");
+                                var indexName = dataReader.GetOrdinal("name");
+
+                                if (dataReader.HasRows)
+                                {
+                                    while (dataReader.Read())
+                                    {
+                                        var channelSettingType = new ChannelSettingType();
+
+                                        channelSettingType.Id = dataReader.GetInt32(indexId);
+                                        channelSettingType.Name = dataReader.GetString(indexName);
+                                    }
+                                }
+                            }
+                            connection.Close();
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            return channelSettingTypeCatalog;
+        }
+
+        public void CopyExistingChannelSettingTemplate(ChannelSettingTemplate template)
+        {
+            string updateCommand = @"INSERT INTO kvorlage (idkvorlage, name) VALUES (@Id, @FullName);";
+
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(updateCommand, connection))
+                        {
+                            connection.Open();
+
+                            var parameterId = command.CreateParameter();
+                            parameterId.ParameterName = "Id";
+                            parameterId.Value = template.Id;
+                            command.Parameters.Add(parameterId);
+
+                            var parameterFullName = command.CreateParameter();
+                            parameterFullName.ParameterName = "FullName";
+                            parameterFullName.Value = template.FullName;
+                            command.Parameters.Add(parameterFullName);
+
+                            command.ExecuteNonQuery();
+
+                            connection.Close();
+                        }
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+
+        // TODO: Implement Parameter Copying 
     }
 }

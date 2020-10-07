@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
@@ -27,7 +28,8 @@ namespace ChannelSettings.Module.ViewModels
         private NavigationParameters _navigationParameter;
         private SelectionChangedEventArgs _selectionChangedEvent;
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
-        
+        public DelegateCommand<ChannelSettingTemplate> AddCopiedItemCommand { get; }
+
         /// <summary>
         /// Filter logic for search bar
         /// </summary>
@@ -56,6 +58,27 @@ namespace ChannelSettings.Module.ViewModels
 
             SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
+
+            AddCopiedItemCommand = new DelegateCommand<ChannelSettingTemplate>(CopySelectedItemCreateNewDataset);
+        }
+
+        private void CopySelectedItemCreateNewDataset(ChannelSettingTemplate selectedItem)
+        {
+            var lastId = _channelSettingTemplates.Last().Id;
+
+            var channelSetting = new ChannelSettingTemplate();
+            _channelSettingTemplates.Add(channelSetting);
+
+            if (channelSetting.Id == null || channelSetting.Id == 0)
+            {
+                channelSetting.Id = ++lastId;
+                channelSetting.FullName = selectedItem.FullName;
+            }
+            
+            _database.CopyExistingChannelSettingTemplate(channelSetting);
+
+            GroupByName();
+
         }
 
         #region Methods
@@ -130,9 +153,9 @@ namespace ChannelSettings.Module.ViewModels
             return true;
         }
 
-        public void GroupByName()
+        private void GroupByName()
         {
-            ChannelSettingCollectionView = CollectionViewSource.GetDefaultView(ChannelSettingTemplates);
+            ChannelSettingCollectionView = CollectionViewSource.GetDefaultView(_channelSettingTemplates);
             var groupDescription = new PropertyGroupDescription("FullName");
 
             ChannelSettingCollectionView.GroupDescriptions.Clear();

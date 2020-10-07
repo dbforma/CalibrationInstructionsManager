@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Behaviors\ResponsivenessBehavior.cs" />
+    <Compile Include="Behaviors\SelectingItemBehavior.cs" />
     <Compile Include="Behaviors\SetMinWidthToAutoAttachedBehavior.cs" />
     <Compile Include="Commands\ApplicationCommands.cs" />
     <Compile Include="Commands\IApplicationCommands.cs" />
@@ -124,9 +125,11 @@
     <Compile Include="Models\Templates\IDefaultConfigurationTemplate.cs" />
     <Compile Include="Models\Templates\IMeasurementPointTemplate.cs" />
     <Compile Include="Models\Templates\MeasurementPointTemplate.cs" />
-    <Compile Include="Models\ValueTypes\ChannelSettingParameters.cs" />
-    <Compile Include="Models\ValueTypes\DefaultConfigurationParameters.cs" />
-    <Compile Include="Models\ValueTypes\MeasurementPointParameters.cs" />
+    <Compile Include="Models\Parameters\ChannelSettingParameters.cs" />
+    <Compile Include="Models\Parameters\DefaultConfigurationParameters.cs" />
+    <Compile Include="Models\Parameters\MeasurementPointParameters.cs" />
+    <Compile Include="Models\Types\ChannelSettingType.cs" />
+    <Compile Include="Models\Types\IChannelSettingType.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

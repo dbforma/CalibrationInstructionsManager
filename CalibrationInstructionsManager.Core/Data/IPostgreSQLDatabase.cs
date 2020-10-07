@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
-using CalibrationInstructionsManager.Core.Models.ValueTypes;
+using CalibrationInstructionsManager.Core.Models.Types;
 
 
 namespace CalibrationInstructionsManager.Core.Data
@@ -15,5 +16,7 @@ namespace CalibrationInstructionsManager.Core.Data
         LinkedList<MeasurementPointParameters> GetMeasurementPointValueTypeParameters();
         LinkedList<ChannelSettingTemplate> GetChannelSettingTemplates();
         LinkedList<ChannelSettingParameters> GetChannelSettingParameters();
+        LinkedList<IChannelSettingType> GetChannelSettingTypes();
+        void CopyExistingChannelSettingTemplate(ChannelSettingTemplate template);
     }
 }

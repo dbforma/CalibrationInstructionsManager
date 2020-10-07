@@ -30,16 +30,71 @@
 
         <!-- behaviors:SetMinWidthToAutoAttachedBehavior.SetMinWidthToAuto="True" -->
         <!-- Selected Parameters -->
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ObservableSelectedParameters}" 
+        <!-- ItemsSource="{Binding ObservableSelectedParameters}" -->
+        <DataGrid x:Name="ObservableSelectedParameters" AutoGenerateColumns="False" ItemsSource="{Binding ObservableSelectedParameters}"
                   CanUserAddRows="True"
                   >
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding ParameterId}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Index" Binding="{Binding ParameterIndex}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Default Value" Binding="{Binding DefaultValue}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Uncertainty" Binding="{Binding UncertaintyValue}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding ParameterQuantity}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Default Type" Binding="{Binding TypeName}"></DataGridTextColumn>
+                <!-- <DataGridComboBoxColumn DisplayMemberPath="TypeName" -->
+                <!--                         Header="TypeName" -->
+                <!--                         SelectedItemBinding="{Binding ChannelSettingsDetailViewModel}"> -->
+                <!--     <DataGridComboBoxColumn.ElementStyle> -->
+                <!--         <Style TargetType="{x:Type ComboBox}"> -->
+                <!--             <Setter Property="ItemsSource" Value="{Binding TypeName}" /> -->
+                <!--         </Style> -->
+                <!--     </DataGridComboBoxColumn.ElementStyle> -->
+                <!--     <DataGridComboBoxColumn.EditingElementStyle> -->
+                <!--         <Style TargetType="{x:Type ComboBox}"> -->
+                <!--             <Setter Property="ItemsSource" Value="{Binding TypeName}" /> -->
+                <!--         </Style> -->
+                <!--     </DataGridComboBoxColumn.EditingElementStyle> -->
+                <!-- </DataGridComboBoxColumn> -->
+             
+                <!-- <DataGridTemplateColumn Header="Type"> -->
+                <!--     ~1~ CellTemplate is only for viewing/ read-only @1@ -->
+                <!--     <DataGridTemplateColumn.CellTemplate> -->
+                <!--         <DataTemplate> -->
+                <!--             <TextBlock Text="{Binding Path=ChannelSettingType.Name}"></TextBlock> -->
+                <!--         </DataTemplate> -->
+                <!--     </DataGridTemplateColumn.CellTemplate> -->
+                <!-- -->
+                <!--     <DataGridTemplateColumn.CellEditingTemplate> -->
+                <!--         <DataTemplate> -->
+                <!--             <ComboBox ItemsSource="{Binding Path=TypeName}"></ComboBox> -->
+                <!--         </DataTemplate> -->
+                <!--     </DataGridTemplateColumn.CellEditingTemplate> -->
+                <!-- </DataGridTemplateColumn> -->
+
+                
+
+                <!-- <DataGridComboBoxColumn Header="Number of Copies" -->
+                <!--                         SelectedItemBinding="{Binding TypeName}"> -->
+                <!--     <DataGridComboBoxColumn.ElementStyle> -->
+                <!--         <Style TargetType="ComboBox"> -->
+                <!--             <Setter Property="ItemsSource" Value="{Binding TypeName}"/> -->
+                <!--         </Style> -->
+                <!--     </DataGridComboBoxColumn.ElementStyle> -->
+                <!--     <DataGridComboBoxColumn.EditingElementStyle> -->
+                <!--         <Style TargetType="ComboBox"> -->
+                <!--             <Setter Property="ItemsSource" Value="{Binding TypeName}"/> -->
+                <!--         </Style> -->
+                <!--     </DataGridComboBoxColumn.EditingElementStyle> -->
+                <!-- </DataGridComboBoxColumn> -->
+
+
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
 </UserControl>
+
+
+<!-- Binding="{Binding TypeName} -->
+
+<!-- -->
+<!-- SelectedValuePath="ObservableSelectedParameters" -->
+<!-- SelectedValue="{Binding TypeId, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" -->
