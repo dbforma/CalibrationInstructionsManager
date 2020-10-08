@@ -7,10 +7,12 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
+using CalibrationInstructionsManager.Core.Events;
 using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.Types;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 
 namespace ChannelSettings.Module.ViewModels
@@ -35,7 +37,7 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties
 
-        public ChannelSettingsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
+        public ChannelSettingsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _database = database;
             ObservableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
@@ -43,6 +45,58 @@ namespace ChannelSettings.Module.ViewModels
             GetParametersFromDatabase();
             // ObservableTypeCollection = new ObservableCollection<IChannelSettingType>();
             // GetTypesFromDatabase();
+            eventAggregator.GetEvent<PassSelectedItemEvent>().Subscribe(OnItemReceived);
+            eventAggregator.GetEvent<PassCreatedTemplateIdEvent>().Subscribe(OnIdReceived);
+        }
+
+        public int _id;
+
+        private void OnIdReceived(int obj)
+        {
+            _id = obj;
+        }
+
+        // TODO: Fix dataset entries being populated to database X times
+        private void OnItemReceived(ChannelSettingTemplate obj)
+        {
+            var selectedChannelSettingParameters = _database.GetSelectedChannelSettingParameters(obj.Id);
+            var lastParameterId = _database.GetChannelSettingParameters().Last().ParameterId;
+            var lastTemplateId = _database.GetChannelSettingTemplates().Last().Id;
+
+            foreach (var item in selectedChannelSettingParameters)
+            {
+                var channelSettingParameters = new ChannelSettingParameters();
+
+                channelSettingParameters.ParameterId = ++lastParameterId;
+                channelSettingParameters.TemplateId = lastTemplateId;
+                channelSettingParameters.DefaultValue = item.DefaultValue;
+                channelSettingParameters.UncertaintyValue = item.UncertaintyValue;
+                channelSettingParameters.ParameterIndex = item.ParameterIndex;
+                channelSettingParameters.ParameterQuantity = item.ParameterQuantity;
+                channelSettingParameters.TypeId = item.TypeId;
+
+                _database.CopyExistingChannelSettingParameters(channelSettingParameters);
+            }
+            
+
+
+            // var channelSettingParameters = new ChannelSettingParameters();
+            //
+            // _database.GetSelectedChannelSettingParameters(SelectedChannelSettingTemplate.Id);
+            //
+            // var selectedId = SelectedChannelSettingTemplate.Id;
+            // Console.WriteLine(selectedId);
+            //
+            // _database.CopyExistingChannelSettingParameters(parameters);
+            // get selected id
+            // get parameters of selected id 
+            // copy parameters of selected id to new created
+            // if (_database.GetChannelSettingTemplates().Any(a => a.FullName == SelectedChannelSettingTemplate.FullName ))
+            // {
+            //     Console.WriteLine("juhu");
+            // }
+
+
         }
 
 
@@ -96,7 +150,6 @@ namespace ChannelSettings.Module.ViewModels
                     }
                 }
 
-                CopyParametersOfSelectedItem();
             }
 
             var channelSetting = navigationContext.Parameters["selectedTemplate"] as IChannelSettingTemplate;
@@ -104,15 +157,6 @@ namespace ChannelSettings.Module.ViewModels
             if (channelSetting != null)
             {
                 SelectedChannelSettingTemplate = channelSetting;
-            }
-        }
-
-        public void CopyParametersOfSelectedItem()
-        {
-
-            if (_database.GetChannelSettingTemplates().Any(a => a.FullName == SelectedChannelSettingTemplate.FullName ))
-            {
-                Console.WriteLine("juhu");
             }
         }
 

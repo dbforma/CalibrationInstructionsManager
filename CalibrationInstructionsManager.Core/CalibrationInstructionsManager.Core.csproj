@@ -117,6 +117,7 @@
       <DependentUpon>MessageDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Events\MessageSentEvent.cs" />
+    <Compile Include="Events\PassCreatedTemplateIdEvent.cs" />
     <Compile Include="Events\PassSelectedItemEvent.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\Templates\ChannelSettingTemplate.cs" />

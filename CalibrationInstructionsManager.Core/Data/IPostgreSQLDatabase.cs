@@ -18,5 +18,7 @@ namespace CalibrationInstructionsManager.Core.Data
         LinkedList<ChannelSettingParameters> GetChannelSettingParameters();
         LinkedList<IChannelSettingType> GetChannelSettingTypes();
         void CopyExistingChannelSettingTemplate(ChannelSettingTemplate template);
+        void CopyExistingChannelSettingParameters(ChannelSettingParameters parameters);
+        LinkedList<ChannelSettingParameters> GetSelectedChannelSettingParameters(int? selectedId);
     }
 }

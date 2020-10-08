@@ -9,7 +9,7 @@ using Prism.Events;
 
 namespace CalibrationInstructionsManager.Core.Events
 {
-    public class PassSelectedItemEvent : PubSubEvent<DefaultConfigurationTemplate>
+    public class PassSelectedItemEvent : PubSubEvent<ChannelSettingTemplate>
     {
     }
 }

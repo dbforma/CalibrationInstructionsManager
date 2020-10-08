@@ -525,7 +525,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
         public void CopyExistingChannelSettingTemplate(ChannelSettingTemplate template)
         {
-            string updateCommand = @"INSERT INTO kvorlage (idkvorlage, name) VALUES (@Id, @FullName);";
+            string updateCommand = @"INSERT INTO kvorlage (idkvorlage, name) VALUES (@id, @fullName);";
 
             IsConnectionEstablished();
 
@@ -540,12 +540,12 @@ namespace CalibrationInstructionsManager.Core.Data
                             connection.Open();
 
                             var parameterId = command.CreateParameter();
-                            parameterId.ParameterName = "Id";
+                            parameterId.ParameterName = "id";
                             parameterId.Value = template.Id;
                             command.Parameters.Add(parameterId);
 
                             var parameterFullName = command.CreateParameter();
-                            parameterFullName.ParameterName = "FullName";
+                            parameterFullName.ParameterName = "fullName";
                             parameterFullName.Value = template.FullName;
                             command.Parameters.Add(parameterFullName);
 
@@ -563,6 +563,176 @@ namespace CalibrationInstructionsManager.Core.Data
                 }
             }
         }
+
+        // TODO: Make selectStatement more performantive with WHERE kv.idkvorlage = @selectedId
+        public LinkedList<ChannelSettingParameters> GetSelectedChannelSettingParameters(int? selectedId)
+        {
+            var selectedChannelSettingParameters = new LinkedList<ChannelSettingParameters>();
+            string queryStatement = @"  
+                                        SELECT mp.idmpunkt AS parameterId, kv.idkvorlage AS templateId, mp.vorgabe AS defaultValue, mp.unsicherheit AS uncertaintyValue, 
+                                            mp.index AS parameterIndex, mp.anzahl AS parameterQuantity, vt.name AS typeName, vt.idvorgabetyp AS typeId
+                                        FROM mpunkt mp
+                                        JOIN kvorlage kv
+                                        ON kv.idkvorlage = mp.kvorlage_id
+                                        JOIN vorgabetyp vt
+                                        ON vt.idvorgabetyp = mp.vorgabetyp_id";
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(queryStatement, connection))
+                        {
+                            connection.Open();
+                            using (NpgsqlDataReader dataReader = command.ExecuteReader())
+                            {
+
+                                var indexParameterId = dataReader.GetOrdinal("parameterId");
+                                var indexTemplateId = dataReader.GetOrdinal("templateId");
+                                var indexDefaultValue = dataReader.GetOrdinal("defaultValue");
+                                var indexUncertaintyValue = dataReader.GetOrdinal("uncertaintyValue");
+                                var indexParameterIndex = dataReader.GetOrdinal("parameterIndex");
+                                var indexParameterQuantity = dataReader.GetOrdinal("parameterQuantity");
+                                var indexTypeName = dataReader.GetOrdinal("typeName");
+                                var indexTypeId = dataReader.GetOrdinal("typeId");
+
+                                if (dataReader.HasRows)
+                                {
+                                    while (dataReader.Read())
+                                    {
+                                        var channelSettingParameter = new ChannelSettingParameters();
+
+                                        channelSettingParameter.ParameterId = dataReader.GetInt32(indexParameterId);
+                                        channelSettingParameter.TemplateId = dataReader.GetInt32(indexTemplateId);
+                                        channelSettingParameter.ParameterIndex =
+                                            dataReader.GetInt32(indexParameterIndex);
+                                        channelSettingParameter.ParameterQuantity =
+                                            dataReader.GetInt32(indexParameterQuantity);
+                                        channelSettingParameter.TypeName = dataReader.GetString(indexTypeName);
+                                        channelSettingParameter.TypeId = dataReader.GetInt32(indexTypeId);
+
+                                        if (dataReader.IsDBNull(indexDefaultValue))
+                                        {
+                                            Console.WriteLine("Default Value is null");
+                                        }
+                                        else
+                                        {
+                                            channelSettingParameter.DefaultValue =
+                                                dataReader.GetDouble(indexDefaultValue);
+                                        }
+
+                                        if (dataReader.IsDBNull(indexUncertaintyValue))
+                                        {
+                                            Console.WriteLine("Uncertainty Value is null");
+                                        }
+                                        else
+                                        {
+                                            channelSettingParameter.UncertaintyValue =
+                                                dataReader.GetDouble(indexUncertaintyValue);
+                                        }
+
+                                        if (channelSettingParameter.TemplateId == selectedId)
+                                            selectedChannelSettingParameters.AddLast(channelSettingParameter);
+                                    }
+                                }
+                            }
+                        }
+
+                        connection.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+            return selectedChannelSettingParameters;
+        }
+
+        public void CopyExistingChannelSettingParameters(ChannelSettingParameters parameters)
+        {
+            string updateCommand = @"INSERT INTO mpunkt (idmpunkt, kvorlage_id, vorgabe, unsicherheit, index, anzahl, vorgabetyp_id) VALUES (@parameterId, @templateId, @defaultValue, @uncertaintyValue, @parameterIndex, @parameterQuantity, @typeId);";
+
+            IsConnectionEstablished();
+
+            if (_isConnected)
+            {
+                try
+                {
+                    using (var connection = new NpgsqlConnection(_connectionString))
+                    {
+                        using (var command = new NpgsqlCommand(updateCommand, connection))
+                        {
+                            connection.Open();
+
+                            var parameterId = command.CreateParameter();
+                            parameterId.ParameterName = "parameterId";
+                            parameterId.Value = parameters.ParameterId;
+                            if (parameterId.Value == null)
+                                Console.WriteLine("parameter id is null");
+                            else
+                                command.Parameters.Add(parameterId);
+
+                            var templateId = command.CreateParameter();
+                            templateId.ParameterName = "templateId";
+                            templateId.Value = parameters.TemplateId;
+                            if (templateId.Value == null)
+                                Console.WriteLine("template is null");
+                            else
+                                command.Parameters.Add(templateId);
+
+                            var defaultValue = command.CreateParameter();
+                            defaultValue.ParameterName = "defaultValue";
+                            defaultValue.Value = parameters.DefaultValue;
+                            if(defaultValue.Value == null)
+                                Console.WriteLine("value is null");
+                            else
+                                command.Parameters.Add(defaultValue);
+
+                            var uncertaintyValue = command.CreateParameter();
+                            uncertaintyValue.ParameterName = "uncertaintyValue";
+                            uncertaintyValue.Value = parameters.UncertaintyValue;
+                            if(uncertaintyValue.Value == null)
+                                Console.WriteLine("uncertainty is null");
+                            else 
+                                command.Parameters.Add(uncertaintyValue);
+
+                            var parameterIndex = command.CreateParameter();
+                            parameterIndex.ParameterName = "parameterIndex";
+                            parameterIndex.Value = parameters.ParameterIndex;
+                            command.Parameters.Add(parameterIndex);
+
+                            var parameterQuantity = command.CreateParameter();
+                            parameterQuantity.ParameterName = "parameterQuantity";
+                            parameterQuantity.Value = parameters.ParameterQuantity;
+                            command.Parameters.Add(parameterQuantity);
+
+                            var typeId = command.CreateParameter();
+                            typeId.ParameterName = "typeId";
+                            typeId.Value = parameters.TypeId;
+                            command.Parameters.Add(typeId);
+                            
+                            command.ExecuteNonQuery();
+
+                            connection.Close();
+                        }
+                    }
+                }
+
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+
+
 
         // TODO: Implement Parameter Copying 
     }

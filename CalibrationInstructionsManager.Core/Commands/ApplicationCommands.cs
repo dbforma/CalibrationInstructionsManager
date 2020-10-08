@@ -9,6 +9,8 @@ namespace CalibrationInstructionsManager.Core.Commands
 {
     public class ApplicationCommands : IApplicationCommands
     {
-        public CompositeCommand EnableButtonCommand { get; } = new CompositeCommand();
+        public CompositeCommand WriteToDatabaseCommand { get; } = new CompositeCommand(); 
+        public CompositeCommand EnableButtonCommand { get; } = new CompositeCommand(); 
+
     }
 }

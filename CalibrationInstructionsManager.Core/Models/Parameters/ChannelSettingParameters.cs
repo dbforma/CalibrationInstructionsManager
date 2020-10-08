@@ -19,5 +19,22 @@
         public int ParameterQuantity { get { return _parameterQuantity; } set { _parameterQuantity = value;  } }
         public string TypeName { get { return _typeName; } set { _typeName = value;  } }
         public int TypeId { get { return _typeId; } set { _typeId = value;  } }
+
+        public ChannelSettingParameters()
+        {
+            
+        }
+
+        public ChannelSettingParameters(int parameterId, int templateId, double? defaultValue, double? uncertaintyValue, int parameterIndex, int parameterQuantity, string typeName, int typeId)
+        {
+            _parameterId = parameterId;
+            _templateId = templateId;
+            _defaultValue = defaultValue;
+            _uncertaintyValue = uncertaintyValue;
+            _parameterIndex = parameterIndex;
+            _parameterQuantity = parameterQuantity;
+            _typeName = typeName;
+            _typeId = typeId;
+        }
     }
 }

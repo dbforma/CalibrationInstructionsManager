@@ -84,7 +84,7 @@ namespace CalibrationInstructionsManager.Login.ViewModels
             _regionManager = regionManager;
             _repository = repository;
             PassLoginDataCommand = new DelegateCommand(PassLoginDataToRepository, () => IsLoginDataComplete);
-            // applicationCommands.EnableButtonCommand.RegisterCommand(PassLoginDataCommand);
+            //applicationCommands.CopyDatasetCommand.RegisterCommand(PassLoginDataCommand);
         }
 
         public void Navigate()

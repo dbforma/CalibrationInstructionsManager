@@ -33,7 +33,7 @@
             <Button Command="{Binding NavigateCommand}" CommandParameter="DefaultConfigurationsOverviewView" Content="D E F A U L T  C O N F I G U R A T I O N S" Width="260" Height="40"></Button>
             <Button Command="{Binding NavigateCommand}" CommandParameter="MeasurementPointsOverviewView" Content="M E A S U R E M E N T  P O I N T S" Width="260" Height="40"></Button>
             <Button Command="{Binding NavigateCommand}" CommandParameter="ChannelSettingsOverviewView" Content="C H A N N E L  S E T T I N G S" Width="260" Height="40"></Button>
-            <Button Command="{Binding ApplicationCommands.EnableButtonCommand}" CommandParameter="MeasurementPointsOverviewView" Content="W R I T E  T O  D A T A B A S E" Width="260" Height="40"></Button>
+            <Button Command="{Binding ApplicationCommands.WriteToDatabaseCommand}" Content="W R I T E  T O  D A T A B A S E" Width="260" Height="40"></Button>
         </StackPanel>
 
         <!-- Navigation Region -->

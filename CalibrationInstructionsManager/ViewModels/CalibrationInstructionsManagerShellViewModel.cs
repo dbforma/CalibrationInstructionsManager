@@ -1,4 +1,5 @@
-﻿using CalibrationInstructionsManager.Core.Commands;
+﻿using System;
+using CalibrationInstructionsManager.Core.Commands;
 using CalibrationInstructionsManager.Core.Data;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -20,6 +21,8 @@ namespace CalibrationInstructionsManager.ViewModels
 
         public DelegateCommand<string> NavigateCommand { get; set; }
 
+        public DelegateCommand<IPostgreSQLDatabase> WriteToDatabaseCommand { get; set; }
+
         #endregion // Properties
 
         public CalibrationInstructionsManagerShellViewModel(IApplicationCommands applicationCommands, IRegionManager regionManager)
@@ -28,6 +31,14 @@ namespace CalibrationInstructionsManager.ViewModels
             _regionManager = regionManager;
             NavigateCommand = new DelegateCommand<string>(Navigate);
             applicationCommands.EnableButtonCommand.RegisterCommand(NavigateCommand);
+
+            WriteToDatabaseCommand = new DelegateCommand<IPostgreSQLDatabase>(WriteToDatabase);
+            applicationCommands.WriteToDatabaseCommand.RegisterCommand(WriteToDatabaseCommand);
+        }
+
+        private void WriteToDatabase(IPostgreSQLDatabase database)
+        {
+            Console.WriteLine("Writing to database");
         }
 
         public CalibrationInstructionsManagerShellViewModel()

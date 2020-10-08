@@ -8,10 +8,10 @@ namespace CalibrationInstructionsManager.Core.Models.Templates
     {
         #region Properties
 
-        private int? _id;
+        private int _id;
         private string _fullName;
 
-        public int? Id { get { return _id; } set { _id = value; OnPropertyChanged(); } }
+        public int Id { get { return _id; } set { _id = value; OnPropertyChanged(); } }
         public string FullName { get { return _fullName; } set { _fullName = value; OnPropertyChanged(); } }
 
         #endregion // Properties

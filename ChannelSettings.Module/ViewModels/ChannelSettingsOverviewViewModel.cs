@@ -6,9 +6,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
+using CalibrationInstructionsManager.Core.Events;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Extensions;
 using Prism.Commands;
+using Prism.Events;
 using Prism.Regions;
 
 namespace ChannelSettings.Module.ViewModels
@@ -29,6 +31,8 @@ namespace ChannelSettings.Module.ViewModels
         private SelectionChangedEventArgs _selectionChangedEvent;
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
         public DelegateCommand<ChannelSettingTemplate> AddCopiedItemCommand { get; }
+
+        private readonly IEventAggregator _eventAggregator;
 
         /// <summary>
         /// Filter logic for search bar
@@ -51,7 +55,7 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
+        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _database = database;
             _regionManager = regionManager;
@@ -60,6 +64,8 @@ namespace ChannelSettings.Module.ViewModels
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
 
             AddCopiedItemCommand = new DelegateCommand<ChannelSettingTemplate>(CopySelectedItemCreateNewDataset);
+
+            _eventAggregator = eventAggregator;
         }
 
         private void CopySelectedItemCreateNewDataset(ChannelSettingTemplate selectedItem)
@@ -74,10 +80,13 @@ namespace ChannelSettings.Module.ViewModels
                 channelSetting.Id = ++lastId;
                 channelSetting.FullName = selectedItem.FullName;
             }
-            
+
             _database.CopyExistingChannelSettingTemplate(channelSetting);
 
-            GroupByName();
+            _eventAggregator.GetEvent<PassSelectedItemEvent>().Publish(selectedItem);
+            _eventAggregator.GetEvent<PassCreatedTemplateIdEvent>().Publish(channelSetting.Id);
+
+            SetChannelSettingCollectionView();
 
         }
 
@@ -133,7 +142,7 @@ namespace ChannelSettings.Module.ViewModels
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             GetTemplatesFromDatabase();
-            GroupByName();
+            SetChannelSettingCollectionView();
         }
 
         public ObservableCollection<IChannelSettingTemplate> GetTemplatesFromDatabase()
@@ -153,7 +162,7 @@ namespace ChannelSettings.Module.ViewModels
             return true;
         }
 
-        private void GroupByName()
+        private void SetChannelSettingCollectionView()
         {
             ChannelSettingCollectionView = CollectionViewSource.GetDefaultView(_channelSettingTemplates);
             var groupDescription = new PropertyGroupDescription("FullName");
