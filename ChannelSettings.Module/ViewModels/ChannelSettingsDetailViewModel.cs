@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Windows.Data;
-using System.Windows.Documents;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Events;
 using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
-using CalibrationInstructionsManager.Core.Models.Types;
-using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
 
@@ -31,9 +26,8 @@ namespace ChannelSettings.Module.ViewModels
 
         private IPostgreSQLDatabase _database;
 
-        // private ObservableCollection<IChannelSettingType> _observableTypeCollection;
-        // public ObservableCollection<IChannelSettingType> ObservableTypeCollection { get { return _observableTypeCollection; } set { SetProperty(ref _observableTypeCollection, value); } }
-
+        // private ChannelSettingParameters _channelSettingParameters;
+        // public ChannelSettingParameters ChannelSettingParameters { get { return _channelSettingParameters; } set { SetProperty(ref _channelSettingParameters, value); } }
 
         #endregion // Properties
 
@@ -43,62 +37,43 @@ namespace ChannelSettings.Module.ViewModels
             ObservableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
             ObservableSelectedParameters = new ObservableCollection<ChannelSettingParameters>();
             GetParametersFromDatabase();
-            // ObservableTypeCollection = new ObservableCollection<IChannelSettingType>();
-            // GetTypesFromDatabase();
-            eventAggregator.GetEvent<PassSelectedItemEvent>().Subscribe(OnItemReceived);
-            eventAggregator.GetEvent<PassCreatedTemplateIdEvent>().Subscribe(OnIdReceived);
+            //eventAggregator.GetEvent<PassSelectedItemEvent>().Subscribe(OnItemReceived);
+            eventAggregator.GetEvent<TemplateCopiedEvent>().Subscribe(OnItemReceived);
         }
 
-        public int _id;
-
-        private void OnIdReceived(int obj)
+        // In Service verlagern und alles was dazu gehört
+        private void OnItemReceived(Dictionary<string, int> dict)
         {
-            _id = obj;
-        }
+            ChannelSettingParameters _channelSettingParameters;
 
-        // TODO: Fix dataset entries being populated to database X times
-        private void OnItemReceived(ChannelSettingTemplate obj)
-        {
-            var selectedChannelSettingParameters = _database.GetSelectedChannelSettingParameters(obj.Id);
-            var lastParameterId = _database.GetChannelSettingParameters().Last().ParameterId;
-            var lastTemplateId = _database.GetChannelSettingTemplates().Last().Id;
+            int newId;
+            dict.TryGetValue("newId", out newId);
+
+            int oldId;
+            dict.TryGetValue("oldId", out oldId);
+
+            var selectedChannelSettingParameters = _database.GetSelectedChannelSettingParameters(oldId);
+
+            
+
+            // TODO: Fix dataset entries being populated to database X times 
 
             foreach (var item in selectedChannelSettingParameters)
             {
-                var channelSettingParameters = new ChannelSettingParameters();
+                _channelSettingParameters = new ChannelSettingParameters();
 
-                channelSettingParameters.ParameterId = ++lastParameterId;
-                channelSettingParameters.TemplateId = lastTemplateId;
-                channelSettingParameters.DefaultValue = item.DefaultValue;
-                channelSettingParameters.UncertaintyValue = item.UncertaintyValue;
-                channelSettingParameters.ParameterIndex = item.ParameterIndex;
-                channelSettingParameters.ParameterQuantity = item.ParameterQuantity;
-                channelSettingParameters.TypeId = item.TypeId;
+                _channelSettingParameters.TemplateId = newId;
+                _channelSettingParameters.DefaultValue = item.DefaultValue;
+                _channelSettingParameters.UncertaintyValue = item.UncertaintyValue;
+                _channelSettingParameters.ParameterIndex = item.ParameterIndex;
+                _channelSettingParameters.ParameterQuantity = item.ParameterQuantity;
+                _channelSettingParameters.TypeId = item.TypeId;
 
-                _database.CopyExistingChannelSettingParameters(channelSettingParameters);
+                _database.CopyExistingChannelSettingParameters(_channelSettingParameters);
+
             }
-            
-
-
-            // var channelSettingParameters = new ChannelSettingParameters();
-            //
-            // _database.GetSelectedChannelSettingParameters(SelectedChannelSettingTemplate.Id);
-            //
-            // var selectedId = SelectedChannelSettingTemplate.Id;
-            // Console.WriteLine(selectedId);
-            //
-            // _database.CopyExistingChannelSettingParameters(parameters);
-            // get selected id
-            // get parameters of selected id 
-            // copy parameters of selected id to new created
-            // if (_database.GetChannelSettingTemplates().Any(a => a.FullName == SelectedChannelSettingTemplate.FullName ))
-            // {
-            //     Console.WriteLine("juhu");
-            // }
-
 
         }
-
 
         #region Methods
 
@@ -113,17 +88,6 @@ namespace ChannelSettings.Module.ViewModels
             return ObservableParameterCollection;
         }
 
-        // public ObservableCollection<IChannelSettingType> GetTypesFromDatabase()
-        // {
-        //     ObservableTypeCollection.Clear();
-        //
-        //     foreach (var item in _database.GetChannelSettingTypes())
-        //     {
-        //         ObservableTypeCollection.Add(item);
-        //     }
-        //
-        //     return ObservableTypeCollection;
-        // }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

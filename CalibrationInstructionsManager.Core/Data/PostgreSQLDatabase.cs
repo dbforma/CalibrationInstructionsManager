@@ -1,9 +1,13 @@
 ﻿// Note: System.Threading.Tasks.Extensions must be <= 4.5.2
 // TODO: Seperate PostgreSQLDatabase into GetChannelSettingsCommand/ UpdateChannelSettingsCommands, GetMeasurementPointsCommand/ UpdateMeasurementPointsCommand and GetDefaultConfigurationsCommand/ UpdateDefaultConfigurationsCommand
+// TODO: Seperate PostgreSQLDatabase into Read & Write modules (CQRS)
+// TODO: Fragestellung: Schreibdatenbank: saubere Modellierung / Anwendung der Normalformen // Lesedatenbank: möglichst denormalisiert, damit mögl. schnell gelesen werden kann (SELECT * FROM X) ohne JOIN ?
+// Unidirektionaler Datenfluss: Immer über die Schreib-API in die Schreibdatenbank, in die Lesedatenbank und von dort über die Lese-API zurück zum Client (Twitter/ FacebooK)
 
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Windows.Media;
 using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Models.Types;
@@ -136,6 +140,9 @@ namespace CalibrationInstructionsManager.Core.Data
         /// Queries the table kkonfigtyp and kkonfigliste to get corresponding attributes of each default configuration dataset
         /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Parameters
         /// </summary>
+        
+        // TODO: using connection/ commands in eigene Funktion
+
         public LinkedList<DefaultConfigurationParameters> GetDefaultConfigurationValueTypeParameters()
         {
             var defaultConfigurationValueTypeCatalog = new LinkedList<DefaultConfigurationParameters>();
@@ -439,7 +446,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
                                         if (dataReader.IsDBNull(indexDefaultValue))
                                         {
-                                            Console.WriteLine("Default Value is null");
+                                            channelSettingParameter.DefaultValue = null;
                                         }
                                         else
                                         {
@@ -448,7 +455,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
                                         if (dataReader.IsDBNull(indexUncertaintyValue))
                                         {
-                                            Console.WriteLine("Uncertainty Value is null");
+                                            channelSettingParameter.UncertaintyValue = null;
                                         }
                                         else
                                         {
@@ -523,9 +530,10 @@ namespace CalibrationInstructionsManager.Core.Data
             return channelSettingTypeCatalog;
         }
 
-        public void CopyExistingChannelSettingTemplate(ChannelSettingTemplate template)
+        public int CopyExistingChannelSettingTemplate(ChannelSettingTemplate template)
         {
-            string updateCommand = @"INSERT INTO kvorlage (idkvorlage, name) VALUES (@id, @fullName);";
+            string updateCommand = @"INSERT INTO kvorlage (name) VALUES (@fullName) RETURNING idkvorlage;";
+            int generatedId = -1; 
 
             IsConnectionEstablished();
 
@@ -539,17 +547,12 @@ namespace CalibrationInstructionsManager.Core.Data
                         {
                             connection.Open();
 
-                            var parameterId = command.CreateParameter();
-                            parameterId.ParameterName = "id";
-                            parameterId.Value = template.Id;
-                            command.Parameters.Add(parameterId);
+                            if (template.FullName != null)
+                                command.Parameters.AddWithValue("@fullName", template.FullName);
 
-                            var parameterFullName = command.CreateParameter();
-                            parameterFullName.ParameterName = "fullName";
-                            parameterFullName.Value = template.FullName;
-                            command.Parameters.Add(parameterFullName);
+                            
 
-                            command.ExecuteNonQuery();
+                            generatedId = (int)command.ExecuteScalar();
 
                             connection.Close();
                         }
@@ -562,6 +565,8 @@ namespace CalibrationInstructionsManager.Core.Data
                     throw;
                 }
             }
+
+            return generatedId;
         }
 
         // TODO: Make selectStatement more performantive with WHERE kv.idkvorlage = @selectedId
@@ -607,31 +612,19 @@ namespace CalibrationInstructionsManager.Core.Data
 
                                         channelSettingParameter.ParameterId = dataReader.GetInt32(indexParameterId);
                                         channelSettingParameter.TemplateId = dataReader.GetInt32(indexTemplateId);
-                                        channelSettingParameter.ParameterIndex =
-                                            dataReader.GetInt32(indexParameterIndex);
-                                        channelSettingParameter.ParameterQuantity =
-                                            dataReader.GetInt32(indexParameterQuantity);
+                                        channelSettingParameter.ParameterIndex = dataReader.GetInt32(indexParameterIndex);
+                                        channelSettingParameter.ParameterQuantity = dataReader.GetInt32(indexParameterQuantity);
                                         channelSettingParameter.TypeName = dataReader.GetString(indexTypeName);
                                         channelSettingParameter.TypeId = dataReader.GetInt32(indexTypeId);
 
-                                        if (dataReader.IsDBNull(indexDefaultValue))
+                                        if (!dataReader.IsDBNull(indexDefaultValue))
                                         {
-                                            Console.WriteLine("Default Value is null");
+                                            channelSettingParameter.DefaultValue = dataReader.GetDouble(indexDefaultValue);
                                         }
-                                        else
+                                        
+                                        if (!dataReader.IsDBNull(indexUncertaintyValue))
                                         {
-                                            channelSettingParameter.DefaultValue =
-                                                dataReader.GetDouble(indexDefaultValue);
-                                        }
-
-                                        if (dataReader.IsDBNull(indexUncertaintyValue))
-                                        {
-                                            Console.WriteLine("Uncertainty Value is null");
-                                        }
-                                        else
-                                        {
-                                            channelSettingParameter.UncertaintyValue =
-                                                dataReader.GetDouble(indexUncertaintyValue);
+                                            channelSettingParameter.UncertaintyValue = dataReader.GetDouble(indexUncertaintyValue);
                                         }
 
                                         if (channelSettingParameter.TemplateId == selectedId)
@@ -654,9 +647,9 @@ namespace CalibrationInstructionsManager.Core.Data
             return selectedChannelSettingParameters;
         }
 
-        public void CopyExistingChannelSettingParameters(ChannelSettingParameters parameters)
+        public void CopyExistingChannelSettingParameters(ChannelSettingParameters parameter)
         {
-            string updateCommand = @"INSERT INTO mpunkt (idmpunkt, kvorlage_id, vorgabe, unsicherheit, index, anzahl, vorgabetyp_id) VALUES (@parameterId, @templateId, @defaultValue, @uncertaintyValue, @parameterIndex, @parameterQuantity, @typeId);";
+            string updateCommand = @"INSERT INTO mpunkt (kvorlage_id, vorgabe, unsicherheit, index, anzahl, vorgabetyp_id) VALUES (@templateId, @defaultValue, @uncertaintyValue, @parameterIndex, @parameterQuantity, @typeId);";
 
             IsConnectionEstablished();
 
@@ -670,52 +663,29 @@ namespace CalibrationInstructionsManager.Core.Data
                         {
                             connection.Open();
 
-                            var parameterId = command.CreateParameter();
-                            parameterId.ParameterName = "parameterId";
-                            parameterId.Value = parameters.ParameterId;
-                            if (parameterId.Value == null)
-                                Console.WriteLine("parameter id is null");
-                            else
-                                command.Parameters.Add(parameterId);
+                            if (parameter.TemplateId != null)
+                                command.Parameters.AddWithValue("@templateId", parameter.TemplateId);
 
-                            var templateId = command.CreateParameter();
-                            templateId.ParameterName = "templateId";
-                            templateId.Value = parameters.TemplateId;
-                            if (templateId.Value == null)
-                                Console.WriteLine("template is null");
-                            else
-                                command.Parameters.Add(templateId);
+                            if (parameter.DefaultValue != null)
+                                command.Parameters.AddWithValue("@defaultValue", parameter.DefaultValue);
 
-                            var defaultValue = command.CreateParameter();
-                            defaultValue.ParameterName = "defaultValue";
-                            defaultValue.Value = parameters.DefaultValue;
-                            if(defaultValue.Value == null)
-                                Console.WriteLine("value is null");
-                            else
-                                command.Parameters.Add(defaultValue);
+                            if (parameter.UncertaintyValue != null)
+                            {
+                                command.Parameters.AddWithValue("@uncertaintyValue", parameter.UncertaintyValue);
+                            }
+                            else if (parameter.UncertaintyValue == null)
+                            {
+                                command.Parameters.AddWithValue("@uncertaintyValue", DBNull.Value);
+                            }
 
-                            var uncertaintyValue = command.CreateParameter();
-                            uncertaintyValue.ParameterName = "uncertaintyValue";
-                            uncertaintyValue.Value = parameters.UncertaintyValue;
-                            if(uncertaintyValue.Value == null)
-                                Console.WriteLine("uncertainty is null");
-                            else 
-                                command.Parameters.Add(uncertaintyValue);
+                            if (parameter.ParameterIndex != null)
+                                command.Parameters.AddWithValue("@parameterIndex", parameter.ParameterIndex);
 
-                            var parameterIndex = command.CreateParameter();
-                            parameterIndex.ParameterName = "parameterIndex";
-                            parameterIndex.Value = parameters.ParameterIndex;
-                            command.Parameters.Add(parameterIndex);
+                            if (parameter.ParameterQuantity != null)
+                                command.Parameters.AddWithValue("@parameterQuantity", parameter.ParameterQuantity);
 
-                            var parameterQuantity = command.CreateParameter();
-                            parameterQuantity.ParameterName = "parameterQuantity";
-                            parameterQuantity.Value = parameters.ParameterQuantity;
-                            command.Parameters.Add(parameterQuantity);
-
-                            var typeId = command.CreateParameter();
-                            typeId.ParameterName = "typeId";
-                            typeId.Value = parameters.TypeId;
-                            command.Parameters.Add(typeId);
+                            if (parameter.TypeId != null)
+                                command.Parameters.AddWithValue("@typeId", parameter.TypeId);
                             
                             command.ExecuteNonQuery();
 
@@ -732,8 +702,5 @@ namespace CalibrationInstructionsManager.Core.Data
             }
         }
 
-
-
-        // TODO: Implement Parameter Copying 
     }
 }

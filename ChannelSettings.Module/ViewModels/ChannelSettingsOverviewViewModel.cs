@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -59,35 +60,32 @@ namespace ChannelSettings.Module.ViewModels
         {
             _database = database;
             _regionManager = regionManager;
+            _eventAggregator = eventAggregator;
 
             SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
 
-            AddCopiedItemCommand = new DelegateCommand<ChannelSettingTemplate>(CopySelectedItemCreateNewDataset);
-
-            _eventAggregator = eventAggregator;
+            AddCopiedItemCommand = new DelegateCommand<ChannelSettingTemplate>(CopySelectedItem);
+            
         }
 
-        private void CopySelectedItemCreateNewDataset(ChannelSettingTemplate selectedItem)
+        private void CopySelectedItem(ChannelSettingTemplate selectedItem)
         {
-            var lastId = _channelSettingTemplates.Last().Id;
+            var generatedId= _database.CopyExistingChannelSettingTemplate(selectedItem);
+            //_channelSettingTemplates.Add(selectedItem);
 
-            var channelSetting = new ChannelSettingTemplate();
-            _channelSettingTemplates.Add(channelSetting);
+            var dict = new Dictionary<string, int>();
+            dict.Add("oldId", selectedItem.Id);
+            dict.Add("newId", generatedId);
 
-            if (channelSetting.Id == null || channelSetting.Id == 0)
-            {
-                channelSetting.Id = ++lastId;
-                channelSetting.FullName = selectedItem.FullName;
-            }
 
-            _database.CopyExistingChannelSettingTemplate(channelSetting);
+            //_eventAggregator.GetEvent<PassSelectedItemEvent>().Publish(selectedItem);
 
-            _eventAggregator.GetEvent<PassSelectedItemEvent>().Publish(selectedItem);
-            _eventAggregator.GetEvent<PassCreatedTemplateIdEvent>().Publish(channelSetting.Id);
-
-            SetChannelSettingCollectionView();
-
+            // IServiceProvider
+            // Serivce als singleton
+            // Service muss event genieren, ansicht refreshen
+            _eventAggregator.GetEvent<TemplateCopiedEvent>().Publish(dict);
+            GetTemplatesFromDatabase();
         }
 
         #region Methods
@@ -105,8 +103,8 @@ namespace ChannelSettings.Module.ViewModels
             {
                 _selectionChangedEvent = (SelectionChangedEventArgs)selectedItem;
                 // BEGIN TEST
-                var test = (ChannelSettingTemplate)_selectionChangedEvent.RemovedItems[0];
-                Console.WriteLine(test.FullName);
+                // var test = (ChannelSettingTemplate)_selectionChangedEvent.RemovedItems[0];
+                // Console.WriteLine(test.FullName);
                 // END TEST
             }
 
@@ -143,9 +141,10 @@ namespace ChannelSettings.Module.ViewModels
         {
             GetTemplatesFromDatabase();
             SetChannelSettingCollectionView();
+            //GetTemplatesFromDatabase();
         }
 
-        public ObservableCollection<IChannelSettingTemplate> GetTemplatesFromDatabase()
+        private void GetTemplatesFromDatabase()
         {
             ChannelSettingTemplates.Clear();
 
@@ -153,8 +152,6 @@ namespace ChannelSettings.Module.ViewModels
             {
                 ChannelSettingTemplates.Add(item);
             }
-
-            return ChannelSettingTemplates;
         }
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)

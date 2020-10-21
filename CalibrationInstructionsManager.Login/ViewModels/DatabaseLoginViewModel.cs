@@ -31,18 +31,18 @@ namespace CalibrationInstructionsManager.Login.ViewModels
 
 
         // IMC Kalidb
-        public string Host { get; set; } = "10.0.2.167";
-        public string Port { get; set; } = "5433";
-        public string Username { get; set; } = "kalidb";
-        public string Password { get; set; } = "imc";
-        public string Database { get; set; } = "kalidb";
+        // public string Host { get; set; } = "10.0.2.167";
+        // public string Port { get; set; } = "5433";
+        // public string Username { get; set; } = "kalidb";
+        // public string Password { get; set; } = "imc";
+        // public string Database { get; set; } = "kalidb";
 
         // Localhost
-        // public string Host { get; set; } = "localhost";
-        // public string Port { get; set; } = "5432";
-        // public string Username { get; set; } = "postgres";
-        // public string Password { get; set; } = "admin";
-        // public string Database { get; set; } = "kalidb";
+        public string Host { get; set; } = "localhost";
+        public string Port { get; set; } = "5432";
+        public string Username { get; set; } = "postgres";
+        public string Password { get; set; } = "admin";
+        public string Database { get; set; } = "kalidb";
       
 
 
