@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
-using CalibrationInstructionsManager.Core.Events;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Extensions;
+using ChannelSettings.Module.Service;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
@@ -30,8 +28,11 @@ namespace ChannelSettings.Module.ViewModels
         private IPostgreSQLDatabase _database;
         private NavigationParameters _navigationParameter;
         private SelectionChangedEventArgs _selectionChangedEvent;
+
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
-        public DelegateCommand<ChannelSettingTemplate> AddCopiedItemCommand { get; }
+        public DelegateCommand<ChannelSettingTemplate> PassItemCommand { get; }
+
+        private ChannelSettingsOverviewService _overviewService;
 
         private readonly IEventAggregator _eventAggregator;
 
@@ -56,43 +57,39 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
+        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator, ChannelSettingsOverviewService overviewService)
         {
             _database = database;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
+            _overviewService = overviewService;
 
-            SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
 
-            AddCopiedItemCommand = new DelegateCommand<ChannelSettingTemplate>(CopySelectedItem);
-            
-        }
+            SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
+            PassItemCommand = new DelegateCommand<ChannelSettingTemplate>(PassSelectedItemToService);
 
-        private void CopySelectedItem(ChannelSettingTemplate selectedItem)
-        {
-            var generatedId= _database.CopyExistingChannelSettingTemplate(selectedItem);
-            //_channelSettingTemplates.Add(selectedItem);
-
-            var dict = new Dictionary<string, int>();
-            dict.Add("oldId", selectedItem.Id);
-            dict.Add("newId", generatedId);
-
-
-            //_eventAggregator.GetEvent<PassSelectedItemEvent>().Publish(selectedItem);
-
-            // IServiceProvider
-            // Serivce als singleton
-            // Service muss event genieren, ansicht refreshen
-            _eventAggregator.GetEvent<TemplateCopiedEvent>().Publish(dict);
-            GetTemplatesFromDatabase();
+            overviewService = new ChannelSettingsOverviewService(_database); // database für collection view zeugs service ausgliedern
         }
 
         #region Methods
 
+        /// <summary>
+        /// Passes selectedItem to Service. This function gets enabled when the "C O P Y" button is clicked
+        /// </summary>
+        /// <param name="selectedItem"></param>
+        private void PassSelectedItemToService(ChannelSettingTemplate selectedItem)
+        {
+            overviewService.CopyTemplate(selectedItem);
+            PopulateObservableCollection();
+        }
+
+        /// <summary>
+        /// If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of ChannelSettingTemplate and add it to the Observable Collection
+        /// </summary>
+        /// <param name="selectedItem"></param>
         private void checkSelectedItem(object selectedItem)
         {
-            // If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of ChannelSettingTemplate and add it to the Observable Collection
             if (selectedItem.ToString() == "{NewItemPlaceholder}")
             {
                 _channelSettingTemplates.Add(new ChannelSettingTemplate());
@@ -103,8 +100,8 @@ namespace ChannelSettings.Module.ViewModels
             {
                 _selectionChangedEvent = (SelectionChangedEventArgs)selectedItem;
                 // BEGIN TEST
-                // var test = (ChannelSettingTemplate)_selectionChangedEvent.RemovedItems[0];
-                // Console.WriteLine(test.FullName);
+                var test = (ChannelSettingTemplate)_selectionChangedEvent.RemovedItems[0];
+                Console.WriteLine(test.FullName);
                 // END TEST
             }
 
@@ -139,12 +136,29 @@ namespace ChannelSettings.Module.ViewModels
         /// <_navigationParameter name="navigationContext"></_navigationParameter>
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            GetTemplatesFromDatabase();
-            SetChannelSettingCollectionView();
-            //GetTemplatesFromDatabase();
+            PopulateObservableCollection();
+            PopulateCollectionView();
         }
 
-        private void GetTemplatesFromDatabase()
+        public override bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return true;
+        }
+        /// <summary>
+        /// ICollectionView is being used to enable grouping, filtering
+        /// </summary>
+        private void PopulateCollectionView()
+        {
+            ChannelSettingCollectionView = CollectionViewSource.GetDefaultView(_channelSettingTemplates);
+            var groupDescription = new PropertyGroupDescription("FullName");
+            ChannelSettingCollectionView.GroupDescriptions.Clear();
+            ChannelSettingCollectionView.GroupDescriptions.Add(groupDescription);
+        }
+
+        /// <summary>
+        /// Responsible for populating the Observable Collection based on database items and therefor what's displayed in the DataGrid
+        /// </summary>
+        private void PopulateObservableCollection()
         {
             ChannelSettingTemplates.Clear();
 
@@ -154,20 +168,6 @@ namespace ChannelSettings.Module.ViewModels
             }
         }
 
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            return true;
-        }
-
-        private void SetChannelSettingCollectionView()
-        {
-            ChannelSettingCollectionView = CollectionViewSource.GetDefaultView(_channelSettingTemplates);
-            var groupDescription = new PropertyGroupDescription("FullName");
-
-            ChannelSettingCollectionView.GroupDescriptions.Clear();
-
-            ChannelSettingCollectionView.GroupDescriptions.Add(groupDescription);
-        }
 
         #endregion // Methods
     }

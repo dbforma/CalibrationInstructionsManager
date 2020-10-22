@@ -530,7 +530,12 @@ namespace CalibrationInstructionsManager.Core.Data
             return channelSettingTypeCatalog;
         }
 
-        public int CopyExistingChannelSettingTemplate(ChannelSettingTemplate template)
+//        CopyChannelSettingsTemplateAndCorrespondingParameters
+//
+  //          CopyChannelSettingTemplate
+    //         CopyChannelSettingTemplate
+    
+        public int CopyChannelSettingTemplate(ChannelSettingTemplate template)
         {
             string updateCommand = @"INSERT INTO kvorlage (name) VALUES (@fullName) RETURNING idkvorlage;";
             int generatedId = -1; 

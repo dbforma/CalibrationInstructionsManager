@@ -57,7 +57,7 @@
             <TextBlock>Quicksearch:</TextBlock>
             <TextBox Text="{Binding UserInputKeyword, UpdateSourceTrigger=PropertyChanged}"></TextBox>
             <TextBlock>Copy Dataset:</TextBlock>
-            <Button Command="{Binding AddCopiedItemCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_channelSettingTemplates}" Content="C O P Y"></Button>
+            <Button Command="{Binding PassItemCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_channelSettingTemplates}" Content="C O P Y"></Button>
         </StackPanel>
 
         <!-- Default Configuration Overview -->

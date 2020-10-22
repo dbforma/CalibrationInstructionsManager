@@ -7,6 +7,7 @@ using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Events;
 using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Templates;
+using ChannelSettings.Module.Service;
 using Prism.Events;
 using Prism.Regions;
 
@@ -21,14 +22,10 @@ namespace ChannelSettings.Module.ViewModels
         private ObservableCollection<ChannelSettingParameters> _observableSelectedParameters;
         public ObservableCollection<ChannelSettingParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<ChannelSettingParameters> _observableParameterCollection;
         private ObservableCollection<ChannelSettingParameters> ObservableParameterCollection { get; }
 
         private IPostgreSQLDatabase _database;
-
-        // private ChannelSettingParameters _channelSettingParameters;
-        // public ChannelSettingParameters ChannelSettingParameters { get { return _channelSettingParameters; } set { SetProperty(ref _channelSettingParameters, value); } }
-
+        
         #endregion // Properties
 
         public ChannelSettingsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
@@ -36,48 +33,16 @@ namespace ChannelSettings.Module.ViewModels
             _database = database;
             ObservableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
             ObservableSelectedParameters = new ObservableCollection<ChannelSettingParameters>();
-            GetParametersFromDatabase();
-            //eventAggregator.GetEvent<PassSelectedItemEvent>().Subscribe(OnItemReceived);
-            eventAggregator.GetEvent<TemplateCopiedEvent>().Subscribe(OnItemReceived);
-        }
-
-        // In Service verlagern und alles was dazu gehört
-        private void OnItemReceived(Dictionary<string, int> dict)
-        {
-            ChannelSettingParameters _channelSettingParameters;
-
-            int newId;
-            dict.TryGetValue("newId", out newId);
-
-            int oldId;
-            dict.TryGetValue("oldId", out oldId);
-
-            var selectedChannelSettingParameters = _database.GetSelectedChannelSettingParameters(oldId);
-
-            
-
-            // TODO: Fix dataset entries being populated to database X times 
-
-            foreach (var item in selectedChannelSettingParameters)
-            {
-                _channelSettingParameters = new ChannelSettingParameters();
-
-                _channelSettingParameters.TemplateId = newId;
-                _channelSettingParameters.DefaultValue = item.DefaultValue;
-                _channelSettingParameters.UncertaintyValue = item.UncertaintyValue;
-                _channelSettingParameters.ParameterIndex = item.ParameterIndex;
-                _channelSettingParameters.ParameterQuantity = item.ParameterQuantity;
-                _channelSettingParameters.TypeId = item.TypeId;
-
-                _database.CopyExistingChannelSettingParameters(_channelSettingParameters);
-
-            }
-
+            PopulateObservableCollection();
         }
 
         #region Methods
 
-        public ObservableCollection<ChannelSettingParameters> GetParametersFromDatabase()
+        /// <summary>
+        /// Responsible for populating the Observable Collection based on database items and therefor what's displayed in the DataGrid
+        /// </summary>
+
+        public void PopulateObservableCollection()
         {
             ObservableParameterCollection.Clear();
 
@@ -85,10 +50,12 @@ namespace ChannelSettings.Module.ViewModels
             {
                 ObservableParameterCollection.Add(item);
             }
-            return ObservableParameterCollection;
         }
 
-
+        /// <summary>
+        /// Here is the logic defined what should happen if the regionManager navigates to/ from ViewModel/ View
+        /// </summary>
+        /// <param name="navigationContext"></param>
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
@@ -113,7 +80,6 @@ namespace ChannelSettings.Module.ViewModels
                         ObservableSelectedParameters.Add(ObservableParameterCollection[i]);
                     }
                 }
-
             }
 
             var channelSetting = navigationContext.Parameters["selectedTemplate"] as IChannelSettingTemplate;

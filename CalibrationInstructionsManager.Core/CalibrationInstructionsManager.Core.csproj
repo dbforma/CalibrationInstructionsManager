@@ -107,8 +107,6 @@
     <Compile Include="Commands\IApplicationCommands.cs" />
     <Compile Include="Controls\CloseTabAction.cs" />
     <Compile Include="Converters\PrefixValueConverter.cs" />
-    <Compile Include="Data\DefaultConfigurationsUpdateCommand.cs" />
-    <Compile Include="Data\GetInstructionTypesCommand.cs" />
     <Compile Include="Data\IPostgreSQLDatabase.cs" />
     <Compile Include="Data\PostgreSQLDatabase.cs" />
     <Compile Include="Dialogs\IDialogServiceExtensions.cs" />
@@ -117,9 +115,6 @@
       <DependentUpon>MessageDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Events\MessageSentEvent.cs" />
-    <Compile Include="Events\PassCreatedTemplateIdEvent.cs" />
-    <Compile Include="Events\PassSelectedItemEvent.cs" />
-    <Compile Include="Events\TemplateCopiedEvent.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\Templates\ChannelSettingTemplate.cs" />
     <Compile Include="Models\Templates\DefaultConfigurationTemplate.cs" />

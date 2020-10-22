@@ -76,6 +76,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Service\ChannelSettingsDetailService.cs" />
+    <Compile Include="Service\ChannelSettingsOverviewService.cs" />
     <Compile Include="ViewModels\ChannelSettingsDetailViewModel.cs" />
     <Compile Include="ViewModels\ChannelSettingsOverviewViewModel.cs" />
     <Compile Include="Views\ChannelSettingsDetailView.xaml.cs">
@@ -111,6 +113,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(TargetDir)$(TargetName)*$(TargetExt)" "$(SolutionDir)$(SolutionName)\bin\Debug\Modules\" /Y /S</PostBuildEvent>
