@@ -22,7 +22,7 @@ namespace ChannelSettings.Module.ViewModels
         private ObservableCollection<ChannelSettingParameters> _observableSelectedParameters;
         public ObservableCollection<ChannelSettingParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<ChannelSettingParameters> ObservableParameterCollection { get; }
+        private ObservableCollection<ChannelSettingParameters> _observableParameterCollection { get; }
 
         private IPostgreSQLDatabase _database;
         
@@ -31,7 +31,7 @@ namespace ChannelSettings.Module.ViewModels
         public ChannelSettingsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _database = database;
-            ObservableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
+            _observableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
             ObservableSelectedParameters = new ObservableCollection<ChannelSettingParameters>();
             PopulateObservableCollection();
         }
@@ -44,12 +44,16 @@ namespace ChannelSettings.Module.ViewModels
 
         public void PopulateObservableCollection()
         {
-            ObservableParameterCollection.Clear();
-
+            _observableParameterCollection.Clear();
+            
             foreach (var item in _database.GetChannelSettingParameters())
             {
-                ObservableParameterCollection.Add(item);
+                _observableParameterCollection.Add(item);
             }
+
+            //TODO: Fix
+            // ChannelSettingsDetailService detailService = new ChannelSettingsDetailService(_database);
+            // detailService.GetParameters(_observableParameterCollection);
         }
 
         /// <summary>
@@ -73,11 +77,11 @@ namespace ChannelSettings.Module.ViewModels
                 
                 ObservableSelectedParameters.Clear();
 
-                for (int i = 0; i < ObservableParameterCollection.Count; i++)
+                for (int i = 0; i < _observableParameterCollection.Count; i++)
                 {
-                    if (SelectedChannelSettingTemplate.Id == ObservableParameterCollection[i].TemplateId)
+                    if (SelectedChannelSettingTemplate.Id == _observableParameterCollection[i].TemplateId)
                     {
-                        ObservableSelectedParameters.Add(ObservableParameterCollection[i]);
+                        ObservableSelectedParameters.Add(_observableParameterCollection[i]);
                     }
                 }
             }

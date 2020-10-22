@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Parameters;
+using Prism.Mvvm;
 
 namespace ChannelSettings.Module.Service
 {
@@ -8,12 +10,15 @@ namespace ChannelSettings.Module.Service
     /// oldId contains the Id of the selected item that shall be copied
     /// newId contains the generated Id from returned value from PostgreSQL statement and is used in this class as a foreign key
     /// </summary>
-    public class ChannelSettingsDetailService
+    public class ChannelSettingsDetailService : BindableBase, IChannelSettingsDetailService
     {
         private IPostgreSQLDatabase _database;
 
+        private ObservableCollection<ChannelSettingParameters> _observableParameterCollection { get; }
+
         public ChannelSettingsDetailService(IPostgreSQLDatabase database)
         {
+            _observableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
             _database = database;
         }
 
@@ -44,5 +49,16 @@ namespace ChannelSettings.Module.Service
 
             }
         }
+
+        // TODO: Fix 
+        // public void GetParameters(ObservableCollection<ChannelSettingParameters> channelSettingParameters)
+        // {
+        //     _observableParameterCollection.Clear();
+        //
+        //     foreach (var item in _database.GetChannelSettingParameters())
+        //     {
+        //         _observableParameterCollection.Add(item);
+        //     }
+        // }
     }
 }

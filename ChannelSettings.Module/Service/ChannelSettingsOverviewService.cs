@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Templates;
+using Prism.Events;
+using Prism.Mvvm;
 
 namespace ChannelSettings.Module.Service
 {
@@ -8,13 +11,19 @@ namespace ChannelSettings.Module.Service
     /// First step is to copy the selected template (based on oldId) and use the postgres returning statement to save the new auto generated Id to our dictionary
     /// Second step is to copy parameters and use newId therefor
     /// </summary>
-    public class ChannelSettingsOverviewService
+    public class ChannelSettingsOverviewService : BindableBase, IChannelSettingsOverviewService
     {
         private readonly IPostgreSQLDatabase _database;
         private readonly Dictionary<string, int> _idDictionary;
 
+        private ObservableCollection<IChannelSettingTemplate> _channelSettingTemplates;
+        public ObservableCollection<IChannelSettingTemplate> ChannelSettingTemplates { get { return _channelSettingTemplates; } set { SetProperty(ref _channelSettingTemplates, value); } }
+
+        private IEventAggregator _eventAggregator;
+
         public ChannelSettingsOverviewService(IPostgreSQLDatabase database)
         {
+            //_eventAggregator = eventAggregator;
             _database = database;
             _idDictionary = new Dictionary<string, int>();
         }
@@ -23,6 +32,7 @@ namespace ChannelSettings.Module.Service
         {
             int generatedId = _database.CopyChannelSettingTemplate(selectedItem);
 
+            _idDictionary.Clear(); //TODO: Gleicher Schlüssel wurde bereits verwendet, wenn nicht Clear benutzt wird
             _idDictionary.Add("oldId", selectedItem.Id);
             _idDictionary.Add("newId", generatedId);
 
@@ -31,11 +41,21 @@ namespace ChannelSettings.Module.Service
 
         public void CopyParameters()
         {
-            ChannelSettingsDetailService detailService = new ChannelSettingsDetailService(_database); // Konstruktor
+            ChannelSettingsDetailService detailService = new ChannelSettingsDetailService(_database); // TODO: Konstruktor Injection
 
             detailService.PassChannelSettingParametersToDatabase(_idDictionary);
 
-            // event für detailservice benachrichtigen und vice versa
+            // Event für detailservice benachrichtigen und vice versa
+        }
+
+        public void GetTemplates(ObservableCollection<IChannelSettingTemplate> ChannelSettingTemplates)
+        {
+            ChannelSettingTemplates.Clear();
+
+            foreach (var item in _database.GetChannelSettingTemplates())
+            {
+                ChannelSettingTemplates.Add(item);
+            }
         }
     }
 }

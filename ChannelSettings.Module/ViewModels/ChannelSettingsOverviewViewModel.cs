@@ -32,9 +32,9 @@ namespace ChannelSettings.Module.ViewModels
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
         public DelegateCommand<ChannelSettingTemplate> PassItemCommand { get; }
 
-        private ChannelSettingsOverviewService _overviewService;
-
         private readonly IEventAggregator _eventAggregator;
+
+        private IChannelSettingsOverviewService _overviewService;
 
         /// <summary>
         /// Filter logic for search bar
@@ -57,19 +57,17 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator, ChannelSettingsOverviewService overviewService)
+        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _database = database;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
-            _overviewService = overviewService;
+            _overviewService = new ChannelSettingsOverviewService(_database); //TODO: Erzeugungsabhängigkeit auflösen
 
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
 
             SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
             PassItemCommand = new DelegateCommand<ChannelSettingTemplate>(PassSelectedItemToService);
-
-            overviewService = new ChannelSettingsOverviewService(_database); // database für collection view zeugs service ausgliedern
         }
 
         #region Methods
@@ -80,7 +78,8 @@ namespace ChannelSettings.Module.ViewModels
         /// <param name="selectedItem"></param>
         private void PassSelectedItemToService(ChannelSettingTemplate selectedItem)
         {
-            overviewService.CopyTemplate(selectedItem);
+            //var overviewService = new ChannelSettingsOverviewService(_database); // database für collection view zeugs service ausgliedern
+            _overviewService.CopyTemplate(selectedItem);
             PopulateObservableCollection();
         }
 
@@ -144,6 +143,7 @@ namespace ChannelSettings.Module.ViewModels
         {
             return true;
         }
+
         /// <summary>
         /// ICollectionView is being used to enable grouping, filtering
         /// </summary>
@@ -156,18 +156,12 @@ namespace ChannelSettings.Module.ViewModels
         }
 
         /// <summary>
-        /// Responsible for populating the Observable Collection based on database items and therefor what's displayed in the DataGrid
+        /// Populates the Observable Collection
         /// </summary>
         private void PopulateObservableCollection()
         {
-            ChannelSettingTemplates.Clear();
-
-            foreach (var item in _database.GetChannelSettingTemplates())
-            {
-                ChannelSettingTemplates.Add(item);
-            }
+            _overviewService.GetTemplates(ChannelSettingTemplates);
         }
-
 
         #endregion // Methods
     }
