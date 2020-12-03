@@ -1,6 +1,11 @@
-﻿namespace CalibrationInstructionsManager.Core.Models.Parameters
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
+
+namespace CalibrationInstructionsManager.Core.Models.Parameters
 {
-    public class ChannelSettingParameters 
+    public class ChannelSettingParameters : IChannelSettingParameters
     {
         private int _parameterId;
         private int _templateId;
@@ -36,5 +41,26 @@
             _typeName = typeName;
             _typeId = typeId;
         }
+
+        #region INotifyPropertyChanged
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion // INotifyPropertyChanged
+
+        #region Methods
+
+        public override string ToString()
+        {
+            return String.Format($"{ParameterId} {TemplateId} {DefaultValue} {TemplateId} {UncertaintyValue} {ParameterIndex} {ParameterQuantity} {TypeName} {TypeId}");
+        }
+
+        #endregion
+
     }
 }

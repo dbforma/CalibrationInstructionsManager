@@ -6,8 +6,9 @@ using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Events;
 using CalibrationInstructionsManager.Core.Models.Parameters;
+using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
 using CalibrationInstructionsManager.Core.Models.Templates;
-using ChannelSettings.Module.Service;
+//using ChannelSettings.Module.Service;
 using Prism.Events;
 using Prism.Regions;
 
@@ -19,10 +20,10 @@ namespace ChannelSettings.Module.ViewModels
         private IChannelSettingTemplate _selectedChannelSettingTemplate;
         public IChannelSettingTemplate SelectedChannelSettingTemplate { get { return _selectedChannelSettingTemplate; } set { SetProperty(ref _selectedChannelSettingTemplate, value); } }
 
-        private ObservableCollection<ChannelSettingParameters> _observableSelectedParameters;
-        public ObservableCollection<ChannelSettingParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
+        private ObservableCollection<IChannelSettingParameters> _observableSelectedParameters;
+        public ObservableCollection<IChannelSettingParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<ChannelSettingParameters> _observableParameterCollection { get; }
+        private ObservableCollection<IChannelSettingParameters> _observableParameterCollection { get; }
 
         private IPostgreSQLDatabase _database;
         
@@ -31,8 +32,8 @@ namespace ChannelSettings.Module.ViewModels
         public ChannelSettingsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
         {
             _database = database;
-            _observableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
-            ObservableSelectedParameters = new ObservableCollection<ChannelSettingParameters>();
+            _observableParameterCollection = new ObservableCollection<IChannelSettingParameters>();
+            ObservableSelectedParameters = new ObservableCollection<IChannelSettingParameters>();
             PopulateObservableCollection();
         }
 

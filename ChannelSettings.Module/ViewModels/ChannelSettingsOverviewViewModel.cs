@@ -8,6 +8,7 @@ using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Extensions;
 using ChannelSettings.Module.Service;
+//using ChannelSettings.Module.Service;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Regions;
@@ -57,12 +58,12 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
+        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator, IChannelSettingsOverviewService overviewService)
         {
             _database = database;
             _regionManager = regionManager;
             _eventAggregator = eventAggregator;
-            _overviewService = new ChannelSettingsOverviewService(_database); //TODO: Erzeugungsabhängigkeit auflösen
+            _overviewService = overviewService;
 
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
 
@@ -78,7 +79,6 @@ namespace ChannelSettings.Module.ViewModels
         /// <param name="selectedItem"></param>
         private void PassSelectedItemToService(ChannelSettingTemplate selectedItem)
         {
-            //var overviewService = new ChannelSettingsOverviewService(_database); // database für collection view zeugs service ausgliedern
             _overviewService.CopyTemplate(selectedItem);
             PopulateObservableCollection();
         }

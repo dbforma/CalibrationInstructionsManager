@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CalibrationInstructionsManager.Core.Models.Parameters.ChannelSettingParameters">
+    <Position X="16.75" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAQAABAAgAAAAIBAAAAAABAEABAQBBgAACAIAAAEAA=</HashCode>
+      <FileName>Models\Parameters\ChannelSettingParameters.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CalibrationInstructionsManager.Core.Models.Templates.ChannelSettingTemplate">
+    <Position X="20.25" Y="2.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAIAEIABAAAIAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Templates\ChannelSettingTemplate.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

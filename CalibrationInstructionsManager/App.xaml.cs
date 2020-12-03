@@ -4,8 +4,10 @@ using CalibrationInstructionsManager.Core.Commands;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Dialogs.ViewModels;
 using CalibrationInstructionsManager.Core.Dialogs.Views;
+using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Regions;
+using ChannelSettings.Module.Service;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -27,6 +29,9 @@ namespace CalibrationInstructionsManager
             containerRegistry.Register<IChannelSettingTemplate, ChannelSettingTemplate>();
             containerRegistry.Register<IMeasurementPointTemplate, MeasurementPointTemplate>();
             containerRegistry.Register<IDefaultConfigurationTemplate, DefaultConfigurationTemplate>();
+            containerRegistry.Register<IChannelSettingParameters, IChannelSettingParameters>();
+            containerRegistry.Register<IChannelSettingsOverviewService, ChannelSettingsOverviewService>();
+            containerRegistry.Register<IChannelSettingsDetailService, ChannelSettingsDetailService>();
         }
 
         protected override Window CreateShell()

@@ -76,10 +76,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Service\ChannelSettingsDetailService.cs" />
-    <Compile Include="Service\ChannelSettingsOverviewService.cs" />
-    <Compile Include="Service\IChannelSettingsDetailService.cs" />
-    <Compile Include="Service\IChannelSettingsOverviewService.cs" />
     <Compile Include="ViewModels\ChannelSettingsDetailViewModel.cs" />
     <Compile Include="ViewModels\ChannelSettingsOverviewViewModel.cs" />
     <Compile Include="Views\ChannelSettingsDetailView.xaml.cs">
@@ -93,6 +89,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="ChannelSettings.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

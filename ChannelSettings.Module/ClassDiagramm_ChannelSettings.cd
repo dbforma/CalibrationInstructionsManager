@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ChannelSettings.Module.Service.ChannelSettingsDetailService" BaseTypeListCollapsed="true">
+    <Position X="7" Y="3.25" Width="1.5" />
+    <AssociationLine Name="_observableParameterCollection" Type="System.Collections.ObjectModel.ObservableCollection&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="3.289" Y="-2.64" Height="0.182" Width="2.062" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAgAAAAQAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Service\ChannelSettingsDetailService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_database" />
+      <Property Name="_observableParameterCollection" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ChannelSettings.Module.Service.ChannelSettingsOverviewService" BaseTypeListCollapsed="true">
+    <Position X="10" Y="3" Width="1.5" />
+    <AssociationLine Name="_channelSettingTemplates" Type="System.Collections.ObjectModel.ObservableCollection&lt;T&gt;">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-3.482" Y="0.818" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAgAAAACAAAAAABAQAAAQAAAAAAAAAQAAEAAEAAAAAA=</HashCode>
+      <FileName>Service\ChannelSettingsOverviewService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_channelSettingTemplates" />
+      <Field Name="_database" />
+      <Field Name="_eventAggregator" />
+      <Field Name="_idDictionary" />
+      <Property Name="ChannelSettingTemplates" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ChannelSettings.Module.ViewModels.ChannelSettingsDetailViewModel">
+    <Position X="18.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAgCAAAcAAAAAAAQAAAAIQAAAAAA=</HashCode>
+      <FileName>ViewModels\ChannelSettingsDetailViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_database" />
+      <Field Name="_observableSelectedParameters" />
+      <Field Name="_selectedChannelSettingTemplate" />
+      <Property Name="_observableParameterCollection" />
+      <Property Name="ObservableSelectedParameters" />
+      <Property Name="SelectedChannelSettingTemplate" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ChannelSettings.Module.ViewModels.ChannelSettingsOverviewViewModel">
+    <Position X="21" Y="5" Width="1.5" />
+    <AssociationLine Name="_navigationParameter" Type="Prism.Regions.NavigationParameters">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.84" Y="0.666" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="_selectionChangedEvent" Type="System.Windows.Controls.SelectionChangedEventArgs">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.784" Y="0.204" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAEAAAACBEAAAUBAAAgAABUAABAAAASAEEAQUBAAAAA=</HashCode>
+      <FileName>ViewModels\ChannelSettingsOverviewViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_channelSettingCollectionView" />
+      <Field Name="_channelSettingTemplates" />
+      <Field Name="_database" />
+      <Field Name="_eventAggregator" />
+      <Field Name="_navigationParameter" />
+      <Field Name="_overviewService" />
+      <Field Name="_regionManager" />
+      <Field Name="_selectionChangedEvent" />
+      <Field Name="_userInputKeyword" />
+      <Property Name="ChannelSettingCollectionView" />
+      <Property Name="ChannelSettingTemplates" />
+      <Property Name="SelectedTemplateCommand" />
+      <Property Name="PassItemCommand" />
+      <Property Name="UserInputKeyword" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="ChannelSettings.Module.Views.ChannelSettingsDetailView">
+    <Position X="25.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\ChannelSettingsDetailView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ChannelSettings.Module.Views.ChannelSettingsOverviewView">
+    <Position X="27.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\ChannelSettingsOverviewView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ChannelSettings.Module.ChannelSettingsModule">
+    <Position X="29" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAECAAAAAAAAAA=</HashCode>
+      <FileName>ChannelSettingsModule.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="System.Collections.ObjectModel.ObservableCollection&lt;T&gt;">
+    <Position X="13" Y="5.25" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Orientation="Left" Position="0.1" />
+  </Class>
+  <Class Name="Prism.Regions.NavigationParameters" Collapsed="true">
+    <Position X="32" Y="7.25" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Orientation="Right" Position="0.1" />
+  </Class>
+  <Class Name="System.Windows.Controls.SelectionChangedEventArgs" Collapsed="true">
+    <Position X="21.25" Y="10" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.String" Collapsed="true">
+    <Position X="28.5" Y="6" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Prism.Commands.DelegateCommand&lt;T&gt;" Collapsed="true">
+    <Position X="28.5" Y="7" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Class Name="System.Collections.Generic.Dictionary&lt;TKey, TValue&gt;" Collapsed="true">
+    <Position X="10" Y="2" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="System.Collections.Generic.Dictionary&lt;TKey, TValue&gt;.Enumerator" Collapsed="true">
+        <TypeIdentifier />
+        <Lollipop Position="0.2" />
+      </Struct>
+      <Class Name="System.Collections.Generic.Dictionary&lt;TKey, TValue&gt;.KeyCollection" Collapsed="true">
+        <TypeIdentifier />
+        <Lollipop Position="0.2" />
+      </Class>
+      <Class Name="System.Collections.Generic.Dictionary&lt;TKey, TValue&gt;.ValueCollection" Collapsed="true">
+        <TypeIdentifier />
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="ChannelSettings.Module.Service.IChannelSettingsDetailService">
+    <Position X="27.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Service\IChannelSettingsDetailService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ChannelSettings.Module.Service.IChannelSettingsOverviewService">
+    <Position X="26" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Service\IChannelSettingsOverviewService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CalibrationInstructionsManager.Core.Data.IPostgreSQLDatabase" Collapsed="true">
+    <Position X="18.75" Y="4" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Prism.Events.IEventAggregator" Collapsed="true">
+    <Position X="19.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="CalibrationInstructionsManager.Core.Models.Templates.IChannelSettingTemplate" Collapsed="true">
+    <Position X="16" Y="8.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="System.ComponentModel.ICollectionView" Collapsed="true">
+    <Position X="25" Y="5" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="Prism.Regions.IRegionManager" Collapsed="true">
+    <Position X="18.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
