@@ -107,8 +107,6 @@
     <Compile Include="Commands\IApplicationCommands.cs" />
     <Compile Include="Controls\CloseTabAction.cs" />
     <Compile Include="Converters\PrefixValueConverter.cs" />
-    <Compile Include="Data\IPostgreSQLDatabase.cs" />
-    <Compile Include="Data\PostgreSQLDatabase.cs" />
     <Compile Include="Dialogs\IDialogServiceExtensions.cs" />
     <Compile Include="Dialogs\ViewModels\MessageDialogViewModel.cs" />
     <Compile Include="Dialogs\Views\MessageDialogView.xaml.cs">
@@ -140,10 +138,6 @@
     </Compile>
     <Compile Include="Regions\KnownRegions.cs" />
     <Compile Include="Regions\StackPanelRegionAdapter.cs" />
-    <Compile Include="Services\ChannelSettings\ChannelSettingsDetailService.cs" />
-    <Compile Include="Services\ChannelSettings\ChannelSettingsOverviewService.cs" />
-    <Compile Include="Services\ChannelSettings\IChannelSettingsDetailService.cs" />
-    <Compile Include="Services\ChannelSettings\IChannelSettingsOverviewService.cs" />
     <Compile Include="ViewModelBase.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

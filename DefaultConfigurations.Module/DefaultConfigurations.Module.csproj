@@ -124,6 +124,14 @@
       <Project>{c467fa2d-70b8-4053-9a35-5793fad8925d}</Project>
       <Name>CalibrationInstructionsManager.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CopyService\CopyService.csproj">
+      <Project>{ff6af8d0-1ba1-4ec4-89ac-1a9344f2f59a}</Project>
+      <Name>CopyService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Postgresql\Postgresql.csproj">
+      <Project>{724cf001-5259-43df-93a7-2316d6c3b437}</Project>
+      <Name>Postgresql</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\DefaultConfigurationsDetailView.xaml">

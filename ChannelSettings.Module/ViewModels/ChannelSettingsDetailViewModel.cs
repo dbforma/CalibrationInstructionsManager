@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
-using CalibrationInstructionsManager.Core.Events;
-using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
 using CalibrationInstructionsManager.Core.Models.Templates;
-//using ChannelSettings.Module.Service;
-using Prism.Events;
 using Prism.Regions;
 
 namespace ChannelSettings.Module.ViewModels
@@ -25,11 +19,11 @@ namespace ChannelSettings.Module.ViewModels
 
         private ObservableCollection<IChannelSettingParameters> _observableParameterCollection { get; }
 
-        private IPostgreSQLDatabase _database;
+        private readonly IPostgresql _database;
         
         #endregion // Properties
 
-        public ChannelSettingsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator)
+        public ChannelSettingsDetailViewModel(IPostgresql database, IRegionManager regionManager)
         {
             _database = database;
             _observableParameterCollection = new ObservableCollection<IChannelSettingParameters>();

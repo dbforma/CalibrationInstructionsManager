@@ -8,6 +8,7 @@ using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Regions;
 using ChannelSettings.Module.Service;
+//using ChannelSettings.Module.Service;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
@@ -25,7 +26,8 @@ namespace CalibrationInstructionsManager
         {
             containerRegistry.RegisterSingleton<IApplicationCommands, ApplicationCommands>();
             containerRegistry.RegisterDialog<MessageDialogView, MessageDialogViewModel>();
-            containerRegistry.RegisterSingleton<IPostgreSQLDatabase, PostgreSQLDatabase>();
+            //containerRegistry.RegisterSingleton<IPostgreSQLDatabase, PostgreSQLDatabase>();
+            containerRegistry.RegisterSingleton<IPostgresql, Postgresql>();
             containerRegistry.Register<IChannelSettingTemplate, ChannelSettingTemplate>();
             containerRegistry.Register<IMeasurementPointTemplate, MeasurementPointTemplate>();
             containerRegistry.Register<IDefaultConfigurationTemplate, DefaultConfigurationTemplate>();

@@ -23,7 +23,7 @@ namespace DefaultConfigurations.Module.ViewModels
         public ICollectionView DefaultConfigurationCollectionView { get { return _defaultConfigurationCollectionView; } set { SetProperty(ref _defaultConfigurationCollectionView, value); } }
 
         private IRegionManager _regionManager;
-        private IPostgreSQLDatabase _database;
+        private IPostgresql _database;
         private NavigationParameters _navigationParameter;
         private SelectionChangedEventArgs _selectionChangedEvent;
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
@@ -49,7 +49,7 @@ namespace DefaultConfigurations.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public DefaultConfigurationsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
+        public DefaultConfigurationsOverviewViewModel(IPostgresql database, IRegionManager regionManager)
         {
             _database = database;
             _regionManager = regionManager;

@@ -18,7 +18,7 @@ namespace MeasurementPoints.Module.ViewModels
     {
         #region Properties & Commands
         private IRegionManager _regionManager;
-        private IPostgreSQLDatabase _database;
+        private IPostgresql _database;
         private NavigationParameters _navigationParameter;
         private SelectionChangedEventArgs _selectionChangedEvent;
 
@@ -51,7 +51,7 @@ namespace MeasurementPoints.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public MeasurementPointsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
+        public MeasurementPointsOverviewViewModel(IPostgresql database, IRegionManager regionManager)
         {
             _database = database;
             _regionManager = regionManager;

@@ -21,7 +21,7 @@ namespace CalibrationInstructionsManager.ViewModels
 
         public DelegateCommand<string> NavigateCommand { get; set; }
 
-        public DelegateCommand<IPostgreSQLDatabase> WriteToDatabaseCommand { get; set; }
+        public DelegateCommand<IPostgresql> WriteToDatabaseCommand { get; set; }
 
         #endregion // Properties
 
@@ -32,11 +32,11 @@ namespace CalibrationInstructionsManager.ViewModels
             NavigateCommand = new DelegateCommand<string>(Navigate);
             applicationCommands.EnableButtonCommand.RegisterCommand(NavigateCommand);
 
-            WriteToDatabaseCommand = new DelegateCommand<IPostgreSQLDatabase>(WriteToDatabase);
+            WriteToDatabaseCommand = new DelegateCommand<IPostgresql>(WriteToDatabase);
             applicationCommands.WriteToDatabaseCommand.RegisterCommand(WriteToDatabaseCommand);
         }
 
-        private void WriteToDatabase(IPostgreSQLDatabase database)
+        private void WriteToDatabase(IPostgresql database)
         {
             Console.WriteLine("Writing to database");
         }

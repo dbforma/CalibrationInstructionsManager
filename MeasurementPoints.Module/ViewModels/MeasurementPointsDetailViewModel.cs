@@ -21,11 +21,11 @@ namespace MeasurementPoints.Module.ViewModels
         private ObservableCollection<MeasurementPointParameters> _observableParameterCollection;
         public ObservableCollection<MeasurementPointParameters> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
-        private IPostgreSQLDatabase _database;
+        private IPostgresql _database;
 
         #endregion // Properties
 
-        public MeasurementPointsDetailViewModel(IPostgreSQLDatabase database)
+        public MeasurementPointsDetailViewModel(IPostgresql database)
         {
             _database = database;
             ObservableParameterCollection = new ObservableCollection<MeasurementPointParameters>();

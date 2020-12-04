@@ -8,9 +8,7 @@ using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Templates;
 using CalibrationInstructionsManager.Core.Extensions;
 using ChannelSettings.Module.Service;
-//using ChannelSettings.Module.Service;
 using Prism.Commands;
-using Prism.Events;
 using Prism.Regions;
 
 namespace ChannelSettings.Module.ViewModels
@@ -25,17 +23,15 @@ namespace ChannelSettings.Module.ViewModels
         private ICollectionView _channelSettingCollectionView;
         public ICollectionView ChannelSettingCollectionView { get { return _channelSettingCollectionView; } set { SetProperty(ref _channelSettingCollectionView, value); } }
 
-        private IRegionManager _regionManager;
-        private IPostgreSQLDatabase _database;
+        private readonly IRegionManager _regionManager;
+        private IPostgresql _database;
         private NavigationParameters _navigationParameter;
         private SelectionChangedEventArgs _selectionChangedEvent;
 
         public DelegateCommand<object> SelectedTemplateCommand { get; set; }
         public DelegateCommand<ChannelSettingTemplate> PassItemCommand { get; }
 
-        private readonly IEventAggregator _eventAggregator;
-
-        private IChannelSettingsOverviewService _overviewService;
+        private readonly IChannelSettingsOverviewService _overviewService;
 
         /// <summary>
         /// Filter logic for search bar
@@ -58,16 +54,15 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties & Commands
 
-        public ChannelSettingsOverviewViewModel(IPostgreSQLDatabase database, IRegionManager regionManager, IEventAggregator eventAggregator, IChannelSettingsOverviewService overviewService)
+        public ChannelSettingsOverviewViewModel(IPostgresql database, IRegionManager regionManager, IChannelSettingsOverviewService overviewService)
         {
             _database = database;
             _regionManager = regionManager;
-            _eventAggregator = eventAggregator;
             _overviewService = overviewService;
 
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
 
-            SelectedTemplateCommand = new DelegateCommand<object>(checkSelectedItem);
+            SelectedTemplateCommand = new DelegateCommand<object>(CheckSelectedItem);
             PassItemCommand = new DelegateCommand<ChannelSettingTemplate>(PassSelectedItemToService);
         }
 
@@ -87,7 +82,7 @@ namespace ChannelSettings.Module.ViewModels
         /// If SelectedItem is NewItemPlaceholder (new row in Datagrid), create a new object of ChannelSettingTemplate and add it to the Observable Collection
         /// </summary>
         /// <param name="selectedItem"></param>
-        private void checkSelectedItem(object selectedItem)
+        private void CheckSelectedItem(object selectedItem)
         {
             if (selectedItem.ToString() == "{NewItemPlaceholder}")
             {

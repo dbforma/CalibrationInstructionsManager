@@ -21,11 +21,11 @@ namespace DefaultConfigurations.Module.ViewModels
         private ObservableCollection<DefaultConfigurationParameters> _observableParameterCollection;
         public ObservableCollection<DefaultConfigurationParameters> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
-        private IPostgreSQLDatabase _database;
+        private IPostgresql _database;
 
         #endregion // Properties
 
-        public DefaultConfigurationsDetailViewModel(IPostgreSQLDatabase database, IRegionManager regionManager)
+        public DefaultConfigurationsDetailViewModel(IPostgresql database, IRegionManager regionManager)
          {
             _database = database;
             ObservableParameterCollection = new ObservableCollection<DefaultConfigurationParameters>();

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Commands;
 using CalibrationInstructionsManager.Core.Data;
+//using CalibrationInstructionsManager.Core.Data;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -47,7 +48,7 @@ namespace CalibrationInstructionsManager.Login.ViewModels
 
 
         private IRegionManager _regionManager;
-        private IPostgreSQLDatabase _repository { get; set; }
+        private IPostgresql _repository { get; set; }
 
         private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
 
@@ -79,7 +80,7 @@ namespace CalibrationInstructionsManager.Login.ViewModels
 
         #endregion // Properties
 
-        public DatabaseLoginViewModel(IPostgreSQLDatabase repository, IRegionManager regionManager, IApplicationCommands applicationCommands)
+        public DatabaseLoginViewModel(IPostgresql repository, IRegionManager regionManager, IApplicationCommands applicationCommands)
         {
             _regionManager = regionManager;
             _repository = repository;

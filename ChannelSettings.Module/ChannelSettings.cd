@@ -20,9 +20,9 @@
       <FileName>ViewModels\ChannelSettingsDetailViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_database" />
-      <Field Name="_observableSelectedParameters" />
       <Field Name="_selectedChannelSettingTemplate" />
+      <Field Name="_observableSelectedParameters" />
+      <Field Name="_database" />
     </ShowAsAssociation>
   </Class>
   <Class Name="ChannelSettings.Module.ViewModels.ChannelSettingsOverviewViewModel">
@@ -42,15 +42,15 @@
       <FileName>ViewModels\ChannelSettingsOverviewViewModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_channelSettingCollectionView" />
       <Field Name="_channelSettingTemplates" />
-      <Field Name="_database" />
-      <Field Name="_eventAggregator" />
-      <Field Name="_navigationParameter" />
-      <Field Name="_overviewService" />
+      <Field Name="_channelSettingCollectionView" />
       <Field Name="_regionManager" />
+      <Field Name="_navigationParameter" />
       <Field Name="_selectionChangedEvent" />
+      <Field Name="_eventAggregator" />
+      <Field Name="_overviewService" />
       <Field Name="_userInputKeyword" />
+      <Field Name="_database" />
       <Property Name="PassItemCommand" />
     </ShowAsAssociation>
   </Class>
@@ -97,10 +97,6 @@
     <Position X="3.25" Y="3.5" Width="1.5" />
     <TypeIdentifier />
   </Interface>
-  <Interface Name="CalibrationInstructionsManager.Core.Data.IPostgreSQLDatabase" Collapsed="true">
-    <Position X="11.5" Y="6.5" Width="2.5" />
-    <TypeIdentifier />
-  </Interface>
   <Interface Name="Prism.Events.IEventAggregator" Collapsed="true">
     <Position X="3.25" Y="6.5" Width="1.5" />
     <TypeIdentifier />
@@ -115,6 +111,10 @@
   </Interface>
   <Interface Name="CalibrationInstructionsManager.Core.Models.Templates.IChannelSettingTemplate" Collapsed="true">
     <Position X="3.25" Y="10.25" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="CalibrationInstructionsManager.Core.Data.IPostgresql" Collapsed="true">
+    <Position X="14" Y="8.25" Width="1.5" />
     <TypeIdentifier />
   </Interface>
   <Font Name="Segoe UI" Size="9" />

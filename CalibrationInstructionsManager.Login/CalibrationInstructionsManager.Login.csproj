@@ -109,6 +109,10 @@
       <Project>{c467fa2d-70b8-4053-9a35-5793fad8925d}</Project>
       <Name>CalibrationInstructionsManager.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Postgresql\Postgresql.csproj">
+      <Project>{724CF001-5259-43DF-93A7-2316D6C3B437}</Project>
+      <Name>Postgresql</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
