@@ -4,6 +4,7 @@ using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
 using CalibrationInstructionsManager.Core.Models.Templates;
+using ChannelSettings.Module.Service;
 using Prism.Regions;
 
 namespace ChannelSettings.Module.ViewModels
@@ -17,16 +18,17 @@ namespace ChannelSettings.Module.ViewModels
         private ObservableCollection<IChannelSettingParameters> _observableSelectedParameters;
         public ObservableCollection<IChannelSettingParameters> ObservableSelectedParameters { get { return _observableSelectedParameters; } set { SetProperty(ref _observableSelectedParameters, value); } }
 
-        private ObservableCollection<IChannelSettingParameters> _observableParameterCollection { get; }
+        private ObservableCollection<IChannelSettingParameters> _observableParameterCollection;
+        public ObservableCollection<IChannelSettingParameters> ObservableParameterCollection { get { return _observableParameterCollection; } set { SetProperty(ref _observableParameterCollection, value); } }
 
         private readonly IPostgresql _database;
-        
+
         #endregion // Properties
 
         public ChannelSettingsDetailViewModel(IPostgresql database, IRegionManager regionManager)
         {
             _database = database;
-            _observableParameterCollection = new ObservableCollection<IChannelSettingParameters>();
+            _observableParameterCollection = new ObservableCollection<IChannelSettingParameters>(_database.GetChannelSettingParameters());
             ObservableSelectedParameters = new ObservableCollection<IChannelSettingParameters>();
             PopulateObservableCollection();
         }
@@ -37,24 +39,18 @@ namespace ChannelSettings.Module.ViewModels
         /// Responsible for populating the Observable Collection based on database items and therefor what's displayed in the DataGrid
         /// </summary>
 
-        public void PopulateObservableCollection()
+        private void PopulateObservableCollection()
         {
-            _observableParameterCollection.Clear();
-            
-            foreach (var item in _database.GetChannelSettingParameters())
-            {
-                _observableParameterCollection.Add(item);
-            }
-
-            //TODO: Fix
-            // ChannelSettingsDetailService detailService = new ChannelSettingsDetailService(_database);
-            // detailService.GetParameters(_observableParameterCollection);
+            //TODO: 
+            IChannelSettingsDetailService detailService = new ChannelSettingsDetailService(_database);
+            detailService.GetParameters(_observableParameterCollection);
         }
 
         /// <summary>
         /// Here is the logic defined what should happen if the regionManager navigates to/ from ViewModel/ View
         /// </summary>
         /// <param name="navigationContext"></param>
+        
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("selectedTemplate"))
@@ -72,6 +68,10 @@ namespace ChannelSettings.Module.ViewModels
                 
                 ObservableSelectedParameters.Clear();
 
+
+                /// <summary>
+                /// Populate Parameter Collection depending on selected ChannelSettingsTemplate item
+                /// </summary>
                 for (int i = 0; i < _observableParameterCollection.Count; i++)
                 {
                     if (SelectedChannelSettingTemplate.Id == _observableParameterCollection[i].TemplateId)

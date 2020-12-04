@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using CalibrationInstructionsManager.Core.Data;
 using CalibrationInstructionsManager.Core.Models.Parameters;
-//using Prism.Mvvm;
+using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
 
 namespace ChannelSettings.Module.Service
 {
@@ -14,11 +14,11 @@ namespace ChannelSettings.Module.Service
     {
         private IPostgresql _database;
 
-        private ObservableCollection<ChannelSettingParameters> _observableParameterCollection { get; }
+        private ObservableCollection<IChannelSettingParameters> _observableParameterCollection { get; }
 
         public ChannelSettingsDetailService(IPostgresql database)
         {
-            _observableParameterCollection = new ObservableCollection<ChannelSettingParameters>();
+            _observableParameterCollection = new ObservableCollection<IChannelSettingParameters>();
             _database = database;
         }
 
@@ -50,15 +50,14 @@ namespace ChannelSettings.Module.Service
             }
         }
 
-        // TODO: Fix 
-        // public void GetParameters(ObservableCollection<ChannelSettingParameters> channelSettingParameters)
-        // {
-        //     _observableParameterCollection.Clear();
-        //
-        //     foreach (var item in _database.GetChannelSettingParameters())
-        //     {
-        //         _observableParameterCollection.Add(item);
-        //     }
-        // }
+        public void GetParameters(ObservableCollection<IChannelSettingParameters> channelSettingParameters)
+        {
+            _observableParameterCollection.Clear();
+        
+            foreach (var item in _database.GetChannelSettingParameters())
+            {
+                _observableParameterCollection.Add(item);
+            }
+        }
     }
 }

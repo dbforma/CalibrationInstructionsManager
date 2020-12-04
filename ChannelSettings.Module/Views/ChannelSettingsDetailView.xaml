@@ -36,10 +36,10 @@
                   >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding ParameterId}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Index" Binding="{Binding ParameterIndex}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Default Value" Binding="{Binding DefaultValue}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Uncertainty" Binding="{Binding UncertaintyValue}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding ParameterQuantity}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Index" Binding="{Binding ParameterIndex, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Default Value" Binding="{Binding DefaultValue, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Uncertainty" Binding="{Binding UncertaintyValue, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding ParameterQuantity, ValidatesOnExceptions=True, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
                 <!-- <DataGridComboBoxColumn DisplayMemberPath="TypeName" -->
                 <!--                         Header="TypeName" -->
                 <!--                         SelectedItemBinding="{Binding ChannelSettingsDetailViewModel}"> -->

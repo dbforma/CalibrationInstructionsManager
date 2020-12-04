@@ -19,18 +19,21 @@ namespace ChannelSettings.Module.Service
         private ObservableCollection<IChannelSettingTemplate> _channelSettingTemplates;
         public ObservableCollection<IChannelSettingTemplate> ChannelSettingTemplates { get { return _channelSettingTemplates; } set { _channelSettingTemplates = value; } }
 
-        public ChannelSettingsOverviewService(IPostgresql database)
+        private readonly IChannelSettingsDetailService _detailService;
+
+        public ChannelSettingsOverviewService(IPostgresql database, IChannelSettingsDetailService detailService)
         {
-            //_eventAggregator = eventAggregator;
             _database = database;
             _idDictionary = new Dictionary<string, int>();
+            _detailService = detailService;
         }
 
         public void CopyTemplate(IChannelSettingTemplate selectedItem)
         {
             int generatedId = _database.CopyChannelSettingTemplate(selectedItem);
 
-            _idDictionary.Clear(); //TODO: Gleicher Schlüssel wurde bereits verwendet, wenn nicht Clear benutzt wird
+            //_idDictionary needs to be cleared, otherwise results in key constraint
+            _idDictionary.Clear(); 
             _idDictionary.Add("oldId", selectedItem.Id);
             _idDictionary.Add("newId", generatedId);
 
@@ -39,11 +42,7 @@ namespace ChannelSettings.Module.Service
 
         public void CopyParameters()
         {
-            ChannelSettingsDetailService detailService = new ChannelSettingsDetailService(_database); // TODO: Konstruktor Injection
-
-            detailService.PassChannelSettingParametersToDatabase(_idDictionary);
-
-            // Event für detailservice benachrichtigen und vice versa
+            _detailService.PassChannelSettingParametersToDatabase(_idDictionary);
         }
 
         public void GetTemplates(ObservableCollection<IChannelSettingTemplate> ChannelSettingTemplates)

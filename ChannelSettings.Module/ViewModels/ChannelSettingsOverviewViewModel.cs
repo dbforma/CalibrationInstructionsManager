@@ -111,7 +111,7 @@ namespace ChannelSettings.Module.ViewModels
         /// Sending parameter "selectedItem" to target-view "DefaultConfigurationDetailView" and navigate to "DefaultConfigurationDetailsRegion" region
         /// </summary>
         /// <_navigationParameter name="selectedTemplate"></_navigationParameter>
-        private void Navigate()
+        public void Navigate()
         {
             try
             {
