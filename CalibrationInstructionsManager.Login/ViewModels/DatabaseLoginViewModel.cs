@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CalibrationInstructionsManager.Core;
 using CalibrationInstructionsManager.Core.Commands;
 using CalibrationInstructionsManager.Core.Data;
-//using CalibrationInstructionsManager.Core.Data;
 using Prism.Commands;
 using Prism.Regions;
 
@@ -44,11 +40,9 @@ namespace CalibrationInstructionsManager.Login.ViewModels
         public string Username { get; set; } = "postgres";
         public string Password { get; set; } = "admin";
         public string Database { get; set; } = "kalidb";
-      
-
-
-        private IRegionManager _regionManager;
-        private IPostgresql _repository { get; set; }
+        
+        private readonly IRegionManager _regionManager;
+        private readonly IPostgresql _repository;
 
         private Dictionary<string, string> Errors { get; } = new Dictionary<string, string>();
 
@@ -65,12 +59,12 @@ namespace CalibrationInstructionsManager.Login.ViewModels
         /// <summary>
         /// If Dictionary "Errors" has any Elements return true
         /// </summary>
-        public bool HasErrors => Errors.Any();
+        private bool HasErrors => Errors.Any();
 
         /// <summary>
         /// If Dictionary has no errors set IsLoginDataComplete to true
         /// </summary>
-        public bool IsLoginDataComplete => !HasErrors;
+        private bool IsLoginDataComplete => !HasErrors;
 
         /// <summary>
         /// IDataErrorInfo property that always retrieves string.Empty
@@ -85,15 +79,14 @@ namespace CalibrationInstructionsManager.Login.ViewModels
             _regionManager = regionManager;
             _repository = repository;
             PassLoginDataCommand = new DelegateCommand(PassLoginDataToRepository, () => IsLoginDataComplete);
-            //applicationCommands.CopyDatasetCommand.RegisterCommand(PassLoginDataCommand);
         }
 
-        public void Navigate()
+        private void Navigate()
         {
             _regionManager.RequestNavigate("NavigationRegion", "DefaultConfigurationsOverviewView");
         }
 
-        public void PassLoginDataToRepository()
+        private void PassLoginDataToRepository()
         {
             _repository.SetDatabaseLoginData(Host, Port, Username, Password, Database);
             if (_repository.IsConnectionEstablished())
