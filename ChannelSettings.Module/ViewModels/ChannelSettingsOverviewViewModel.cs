@@ -56,12 +56,24 @@ namespace ChannelSettings.Module.ViewModels
 
         public ChannelSettingsOverviewViewModel(IPostgresql database, IRegionManager regionManager, IChannelSettingsOverviewService overviewService)
         {
+            if (database == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (regionManager == null)
+            {
+                throw new ArgumentNullException();
+            }
+            if (overviewService == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             _database = database;
             _regionManager = regionManager;
             _overviewService = overviewService;
 
             ChannelSettingTemplates = new ObservableCollection<IChannelSettingTemplate>(database.GetChannelSettingTemplates());
-
             SelectedTemplateCommand = new DelegateCommand<object>(CheckSelectedItem);
             PassItemCommand = new DelegateCommand<ChannelSettingTemplate>(PassSelectedItemToService);
         }

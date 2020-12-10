@@ -127,9 +127,13 @@
       <Project>{C467FA2D-70B8-4053-9A35-5793FAD8925D}</Project>
       <Name>CalibrationInstructionsManager.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CopyService\CopyService.csproj">
-      <Project>{FF6AF8D0-1BA1-4EC4-89AC-1A9344F2F59A}</Project>
-      <Name>CopyService</Name>
+    <ProjectReference Include="..\ChannelSettingsCopyService\ChannelSettingsCopyService.csproj">
+      <Project>{8010F144-CBC4-4B0B-BACE-D186410E6DCD}</Project>
+      <Name>ChannelSettingsCopyService</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MeasurementPointsCopyService\MeasurementPointsCopyService.csproj">
+      <Project>{AE7B74EE-7A85-468B-BAC3-FEDD87753A63}</Project>
+      <Name>MeasurementPointsCopyService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Postgresql\Postgresql.csproj">
       <Project>{724CF001-5259-43DF-93A7-2316D6C3B437}</Project>

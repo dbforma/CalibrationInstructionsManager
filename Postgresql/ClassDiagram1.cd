@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CalibrationInstructionsManager.Core.Data.Postgresql">
+    <Position X="3.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAwQACCCAAgAihAEAAgAgAAAAAAQSIAAIBBABAQEA=</HashCode>
+      <FileName>Postgresql.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="CalibrationInstructionsManager.Core.Data.IPostgresql">
+    <Position X="5.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAwQACCCAAgAChAAAAgAgAAAAAAQCAAAABAABAQEA=</HashCode>
+      <FileName>IPostgresql.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

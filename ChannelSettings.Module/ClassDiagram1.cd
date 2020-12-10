@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ChannelSettings.Module.ViewModels.ChannelSettingsDetailViewModel">
+    <Position X="0.75" Y="4" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAECAAAAAAAAAAgCAAAcAAAAAAAQAAAAIQAAAAAA=</HashCode>
+      <FileName>ViewModels\ChannelSettingsDetailViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChannelSettings.Module.ViewModels.ChannelSettingsOverviewViewModel">
+    <Position X="4.25" Y="4" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAABEAAAUBAAAgAABUAABAQAASAAEAQUBAAAAA=</HashCode>
+      <FileName>ViewModels\ChannelSettingsOverviewViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChannelSettings.Module.Views.ChannelSettingsDetailView" Collapsed="true">
+    <Position X="0.75" Y="2.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\ChannelSettingsDetailView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ChannelSettings.Module.Views.ChannelSettingsOverviewView">
+    <Position X="4.25" Y="2.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Views\ChannelSettingsOverviewView.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ChannelSettings.Module.ChannelSettingsModule">
+    <Position X="0.75" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAECAAAAAAAAAA=</HashCode>
+      <FileName>ChannelSettingsModule.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,6 +1,8 @@
-﻿namespace CalibrationInstructionsManager.Core.Models.Parameters
+﻿using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
+
+namespace CalibrationInstructionsManager.Core.Models.Parameters
 {
-    public class DefaultConfigurationParameters 
+    public class DefaultConfigurationParameters : IDefaultConfigurationParameters
     {
         private int _parameterId;
         private int _templateId;

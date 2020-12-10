@@ -25,8 +25,13 @@ namespace ChannelSettings.Module.ViewModels
 
         #endregion // Properties
 
-        public ChannelSettingsDetailViewModel(IPostgresql database, IRegionManager regionManager)
+        public ChannelSettingsDetailViewModel(IPostgresql database)
         {
+            if (database == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             _database = database;
             _observableParameterCollection = new ObservableCollection<IChannelSettingParameters>(_database.GetChannelSettingParameters());
             ObservableSelectedParameters = new ObservableCollection<IChannelSettingParameters>();
@@ -67,11 +72,12 @@ namespace ChannelSettings.Module.ViewModels
                 }
                 
                 ObservableSelectedParameters.Clear();
-
-
+                
+                
                 /// <summary>
                 /// Populate Parameter Collection depending on selected ChannelSettingsTemplate item
                 /// </summary>
+                
                 for (int i = 0; i < _observableParameterCollection.Count; i++)
                 {
                     if (SelectedChannelSettingTemplate.Id == _observableParameterCollection[i].TemplateId)

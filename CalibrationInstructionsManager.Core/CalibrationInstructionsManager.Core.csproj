@@ -116,6 +116,8 @@
     <Compile Include="Events\MessageSentEvent.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\Parameters.Contract\IChannelSettingParameters.cs" />
+    <Compile Include="Models\Parameters.Contract\IDefaultConfigurationParameters.cs" />
+    <Compile Include="Models\Parameters.Contract\IMeasurementPointParameters.cs" />
     <Compile Include="Models\Templates\ChannelSettingTemplate.cs" />
     <Compile Include="Models\Templates\DefaultConfigurationTemplate.cs" />
     <Compile Include="Models\Templates\IChannelSettingTemplate.cs" />
@@ -145,6 +147,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
+    <None Include="ClassDiagram1.cd" />
     <None Include="Core.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

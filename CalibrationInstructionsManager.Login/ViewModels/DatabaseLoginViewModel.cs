@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using CalibrationInstructionsManager.Core;
@@ -76,6 +77,16 @@ namespace CalibrationInstructionsManager.Login.ViewModels
 
         public DatabaseLoginViewModel(IPostgresql repository, IRegionManager regionManager, IApplicationCommands applicationCommands)
         {
+            if (repository == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (regionManager == null)
+            {
+                throw new ArgumentNullException();
+            }
+
             _regionManager = regionManager;
             _repository = repository;
             PassLoginDataCommand = new DelegateCommand(PassLoginDataToRepository, () => IsLoginDataComplete);

@@ -7,6 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using System.Diagnostics;
 //using System.Windows.Media;
 using CalibrationInstructionsManager.Core.Models.Parameters;
 using CalibrationInstructionsManager.Core.Models.Parameters.Contract;
@@ -119,7 +121,7 @@ namespace CalibrationInstructionsManager.Core.Data
                                         defaultConfigurationTemplate.Id = (int)dataReader.GetValue(indexId);
                                         defaultConfigurationTemplate.FullName = dataReader.GetValue(indexName) as string;
                                         defaultConfigurationTemplate.Commentary = dataReader.GetValue(indexCommentary) as string;
-
+                                        Debug.WriteLine(defaultConfigurationTemplate.Id);
                                         defaultConfigurationTemplates.AddLast(defaultConfigurationTemplate);
                                     }
                                 }
@@ -139,6 +141,7 @@ namespace CalibrationInstructionsManager.Core.Data
             return defaultConfigurationTemplates;
         }
 
+       
         /// <summary>
         /// Queries the table kkonfigtyp and kkonfigliste to get corresponding attributes of each default configuration dataset
         /// Casts datarecordInternal to POCO object defined in CalibrationInstructionsManager.Core.Models.Parameters
@@ -533,10 +536,6 @@ namespace CalibrationInstructionsManager.Core.Data
             return channelSettingTypeCatalog;
         }
 
-        //        CopyChannelSettingsTemplateAndCorrespondingParameters
-        //
-        //          CopyChannelSettingTemplate
-        //         CopyChannelSettingTemplate
 
         public int CopyChannelSettingTemplate(IChannelSettingTemplate template)
         {
@@ -557,9 +556,7 @@ namespace CalibrationInstructionsManager.Core.Data
 
                             if (template.FullName != null)
                                 command.Parameters.AddWithValue("@fullName", template.FullName);
-
-
-
+                            
                             generatedId = (int)command.ExecuteScalar();
 
                             connection.Close();
@@ -602,7 +599,6 @@ namespace CalibrationInstructionsManager.Core.Data
                             connection.Open();
                             using (NpgsqlDataReader dataReader = command.ExecuteReader())
                             {
-
                                 var indexParameterId = dataReader.GetOrdinal("parameterId");
                                 var indexTemplateId = dataReader.GetOrdinal("templateId");
                                 var indexDefaultValue = dataReader.GetOrdinal("defaultValue");
@@ -709,6 +705,42 @@ namespace CalibrationInstructionsManager.Core.Data
                 }
             }
         }
+
+        public int CopyMeasurementPointTemplate(IMeasurementPointTemplate template)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyExistingMeasurementPointParameters(IMeasurementPointParameters parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public LinkedList<IMeasurementPointParameters> GetSelectedMeasurementPointParameters(int? selectedId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int CopyDefaultConfigurationTemplate(IDefaultConfigurationTemplate template)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyExistingDefaultConfigurationParameters(IDefaultConfigurationParameters parameter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public LinkedList<IDefaultConfigurationParameters> GetSelectedDefaultConfigurationParameters(int? selectedId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public LinkedList<IChannelSettingParameters> GetDefaultConfigurationParameters()
+        {
+            throw new NotImplementedException();
+        }
+
 
     }
 }

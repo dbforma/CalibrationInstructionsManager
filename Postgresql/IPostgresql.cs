@@ -11,15 +11,29 @@ namespace CalibrationInstructionsManager.Core.Data
     {
         void SetDatabaseLoginData(string host, string port, string username, string password, string database);
         bool IsConnectionEstablished();
-        LinkedList<Models.Templates.IDefaultConfigurationTemplate> GetDefaultConfigurationTemplates();
         LinkedList<DefaultConfigurationParameters> GetDefaultConfigurationValueTypeParameters();
-        LinkedList<IMeasurementPointTemplate> GetMeasurementPointTemplates();
-        LinkedList<MeasurementPointParameters> GetMeasurementPointValueTypeParameters();
+        
+        LinkedList<IChannelSettingType> GetChannelSettingTypes();
+
         LinkedList<IChannelSettingTemplate> GetChannelSettingTemplates();
         LinkedList<IChannelSettingParameters> GetChannelSettingParameters();
-        LinkedList<IChannelSettingType> GetChannelSettingTypes();
+
+        LinkedList<IMeasurementPointTemplate> GetMeasurementPointTemplates();
+        LinkedList<MeasurementPointParameters> GetMeasurementPointValueTypeParameters();
+
+        LinkedList<IDefaultConfigurationTemplate> GetDefaultConfigurationTemplates();
+        LinkedList<IChannelSettingParameters> GetDefaultConfigurationParameters();
+
         int CopyChannelSettingTemplate(IChannelSettingTemplate template);
         void CopyExistingChannelSettingParameters(IChannelSettingParameters parameter);
         LinkedList<IChannelSettingParameters> GetSelectedChannelSettingParameters(int? selectedId);
+
+        int CopyMeasurementPointTemplate(IMeasurementPointTemplate template);
+        void CopyExistingMeasurementPointParameters(IMeasurementPointParameters parameter);
+        LinkedList<IMeasurementPointParameters> GetSelectedMeasurementPointParameters(int? selectedId);
+
+        int CopyDefaultConfigurationTemplate(IDefaultConfigurationTemplate template);
+        void CopyExistingDefaultConfigurationParameters(IDefaultConfigurationParameters parameter);
+        LinkedList<IDefaultConfigurationParameters> GetSelectedDefaultConfigurationParameters(int? selectedId);
     }
 }

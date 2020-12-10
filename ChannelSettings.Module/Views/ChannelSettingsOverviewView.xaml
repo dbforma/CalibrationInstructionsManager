@@ -47,7 +47,7 @@
     <!-- Grid Definitions -->
     <Grid Background="White" Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="90"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -56,8 +56,10 @@
         <StackPanel Grid.Row="0">
             <TextBlock>Quicksearch:</TextBlock>
             <TextBox Text="{Binding UserInputKeyword, UpdateSourceTrigger=PropertyChanged}"></TextBox>
-            <TextBlock>Copy Dataset:</TextBlock>
-            <Button Command="{Binding PassItemCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_channelSettingTemplates}" Content="C O P Y"></Button>
+
+            <Button Margin="0,5,0,0" Command="{Binding PassItemCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_channelSettingTemplates}" Content="C R E A T E  T E M P L A T E"></Button>
+
+            <Button Margin="0,0,0,0" Command="{Binding PassItemCommand, Mode=OneWay}" CommandParameter="{Binding SelectedItem, ElementName=_channelSettingTemplates}" Content="D E L E T E  D A T A S E T"></Button>
         </StackPanel>
 
         <!-- Default Configuration Overview -->
